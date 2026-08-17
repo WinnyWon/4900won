@@ -1,0 +1,187 @@
+/* =========================================================
+   White / Black theme + cursor controls
+   ========================================================= */
+:root{
+  --theme-bg:#fff;
+  --theme-text:#111;
+  --theme-muted:#d2d2d2;
+  --theme-soft:#f6f6f6;
+  --theme-line:#a9a9a9;
+  --theme-cursor-glow:rgba(127,127,127,.18);
+}
+html[data-theme="dark"]{
+  color-scheme:dark;
+  --theme-bg:#000;
+  --theme-text:#eee;
+  --theme-muted:#2d2d2d;
+  --theme-soft:#090909;
+  --theme-line:#565656;
+  --theme-cursor-glow:rgba(255,255,255,.22);
+}
+
+/* theme toggle — placed just to the left of KR/EN, matching the supplied capture */
+.theme-toggle{
+  position:fixed !important;
+  top:31px !important;
+  right:115px !important;
+  z-index:99998 !important;
+  width:30px !important;
+  height:30px !important;
+  min-width:0 !important;
+  padding:0 !important;
+  margin:0 !important;
+  border:0 !important;
+  border-radius:50% !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  display:block !important;
+  cursor:none !important;
+  transform:rotate(0deg);
+  transform-origin:50% 50%;
+  transition:transform .42s cubic-bezier(.2,.8,.2,1), filter .25s ease, opacity .2s ease !important;
+  overflow:visible;
+}
+.theme-toggle img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  pointer-events:none;
+}
+html[data-theme="dark"] .theme-toggle{
+  transform:rotate(180deg);
+  filter:invert(1);
+}
+.theme-toggle:hover{opacity:.72}
+@media(max-width:700px){
+  .theme-toggle{top:19px !important;right:86px !important;width:25px !important;height:25px !important;}
+}
+
+/* Cursor: exactly 2/3 of the previous 42px cursor; glow scales with it. */
+@media(pointer:fine){
+  .custom-cursor{
+    width:28px !important;
+    height:28px !important;
+    filter:drop-shadow(0 0 2px rgba(127,127,127,.34)) !important;
+  }
+  .custom-cursor::before{
+    width:52px !important;
+    height:52px !important;
+    background:radial-gradient(circle,
+      rgba(127,127,127,.20) 0%,
+      rgba(127,127,127,.12) 34%,
+      rgba(127,127,127,.055) 57%,
+      rgba(127,127,127,0) 76%) !important;
+    filter:blur(4px) !important;
+  }
+  html[data-theme="dark"] .custom-cursor{
+    filter:invert(1) drop-shadow(0 0 2px rgba(255,255,255,.48)) !important;
+  }
+  html[data-theme="dark"] .custom-cursor::before{
+    /* invert() on the cursor also inverts this pseudo-element, so author it dark here
+       to render as a soft white halo after the parent filter. */
+    background:radial-gradient(circle,
+      rgba(0,0,0,.30) 0%,
+      rgba(0,0,0,.18) 34%,
+      rgba(0,0,0,.08) 57%,
+      rgba(0,0,0,0) 76%) !important;
+  }
+}
+
+/* Global surfaces */
+html[data-theme="dark"],
+html[data-theme="dark"] body,
+html[data-theme="dark"] .page,
+html[data-theme="dark"] .graphic-stage,
+html[data-theme="dark"] .loading-screen{
+  background:#000 !important;
+  color:#eee !important;
+}
+
+/* Text / navigation inversion */
+html[data-theme="dark"] nav a,
+html[data-theme="dark"] .side-nav a,
+html[data-theme="dark"] .language span:not(.active),
+html[data-theme="dark"] .lang,
+html[data-theme="dark"] .lang-switch,
+html[data-theme="dark"] .works-nav.has-selection .year-button:not(.is-active){color:#2d2d2d !important;}
+html[data-theme="dark"] nav a:hover,
+html[data-theme="dark"] nav a.is-active,
+html[data-theme="dark"] .side-nav a:hover,
+html[data-theme="dark"] .side-nav a.active,
+html[data-theme="dark"] .language .active,
+html[data-theme="dark"] .lang .active,
+html[data-theme="dark"] .lang-switch .active,
+html[data-theme="dark"] .works-nav .year-button,
+html[data-theme="dark"] .works-nav .year-button.is-active,
+html[data-theme="dark"] .subnav button,
+html[data-theme="dark"] .contact-left,
+html[data-theme="dark"] .contact-right,
+html[data-theme="dark"] .gallery-heading,
+html[data-theme="dark"] .lightbox figcaption{color:#eee !important;}
+html[data-theme="dark"] .click-hint{color:#282828 !important;}
+
+/* SVG / monochrome UI artwork */
+/* Brand/home and loading artwork deliberately keep their original colors in both themes. */
+html[data-theme="dark"] .home img,
+html[data-theme="dark"] .home-tag img,
+html[data-theme="dark"] .logo img,
+html[data-theme="dark"] img[src*="nametag.svg"],
+html[data-theme="dark"] img[src*="watermark"]{filter:none !important;}
+html[data-theme="dark"] #mainGraphic .cls-1,
+html[data-theme="dark"] #mainGraphic path,
+html[data-theme="dark"] #mainGraphic circle,
+html[data-theme="dark"] #mainGraphic ellipse,
+html[data-theme="dark"] #mainGraphic line,
+html[data-theme="dark"] #mainGraphic polyline,
+html[data-theme="dark"] #mainGraphic polygon{stroke:#fff !important;}
+html[data-theme="dark"] body.loaded #info *,
+html[data-theme="dark"] body.loaded #works *,
+html[data-theme="dark"] body.loaded #shop *{stroke:#303030 !important;}
+html[data-theme="dark"] body.loaded #info:hover *,
+html[data-theme="dark"] body.loaded #works:hover *,
+html[data-theme="dark"] body.loaded #shop:hover *,
+html[data-theme="dark"] body.loaded #info.is-active *,
+html[data-theme="dark"] body.loaded #works.is-active *,
+html[data-theme="dark"] body.loaded #shop.is-active *{stroke:#eee !important;}
+
+/* Keep the main graphic aura red in dark mode too. */
+html[data-theme="dark"] #mainGraphic{
+  filter:
+    drop-shadow(0 0 7px rgba(170,20,20,.26))
+    drop-shadow(0 0 18px rgba(205,35,35,.18))
+    drop-shadow(0 0 42px rgba(245,65,65,.11))
+    drop-shadow(0 0 68px rgba(255,95,95,.055)) !important;
+}
+html[data-theme="dark"] #mainGraphic.draw{animation:bloodGlowDark 2.8s ease forwards !important;}
+@keyframes bloodGlowDark{
+  0%{filter:drop-shadow(0 0 5px rgba(170,20,20,.20)) drop-shadow(0 0 15px rgba(205,35,35,.14)) drop-shadow(0 0 36px rgba(245,65,65,.08)) drop-shadow(0 0 60px rgba(255,95,95,.04));}
+  45%{filter:drop-shadow(0 0 9px rgba(170,20,20,.32)) drop-shadow(0 0 24px rgba(205,35,35,.22)) drop-shadow(0 0 52px rgba(245,65,65,.13)) drop-shadow(0 0 78px rgba(255,95,95,.07));}
+  100%{filter:drop-shadow(0 0 7px rgba(170,20,20,.26)) drop-shadow(0 0 18px rgba(205,35,35,.18)) drop-shadow(0 0 42px rgba(245,65,65,.11)) drop-shadow(0 0 68px rgba(255,95,95,.055));}
+}
+
+/* On the home page the theme button joins the rest of the UI only after the intro motion. */
+body.has-loading-intro .theme-toggle{opacity:0 !important;pointer-events:none !important;}
+body.has-loading-intro.loaded .theme-toggle{opacity:1 !important;pointer-events:auto !important;}
+body.has-loading-intro.loaded .theme-toggle:hover{opacity:.72 !important;}
+
+/* Info page */
+html[data-theme="dark"] .texture-header::after{background:rgba(0,0,0,.05) !important;}
+html[data-theme="dark"] .scene-tattoo .ghost-graphic{filter:grayscale(1) contrast(.8) invert(1) !important;}
+
+/* Works */
+html[data-theme="dark"] .gallery-item img{background:#090909 !important;}
+html[data-theme="dark"] .gallery-item button:hover img{opacity:.72;}
+html[data-theme="dark"] .lightbox{background:rgba(0,0,0,.98) !important;color:#eee !important;}
+html[data-theme="dark"] .size-control input[type="range"]::-webkit-slider-runnable-track{background:#565656 !important;}
+html[data-theme="dark"] .size-control input[type="range"]::-webkit-slider-thumb{background:#eee !important;}
+html[data-theme="dark"] .size-control input[type="range"]::-moz-range-track{background:#565656 !important;}
+html[data-theme="dark"] .size-control input[type="range"]::-moz-range-thumb{background:#eee !important;}
+
+/* Try-on page: preserve webcam imagery; invert only interface colors. */
+html[data-theme="light"] body.tryon-page,
+html[data-theme="light"] body.tryon-page #app{background:#fff !important;}
+html[data-theme="dark"] body.tryon-page,
+html[data-theme="dark"] body.tryon-page #app{background:#000 !important;}
+
+@media(prefers-reduced-motion:reduce){.theme-toggle{transition:none !important;}}

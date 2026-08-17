@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TYPE — Sangsoo1ee</title>
+
+<style>
+@font-face{
+  font-family:"Sangsoo1ee";
+  src:url("Sangsoo1ee-Regular.otf") format("opentype"),
+      url("Sangsoo1ee-Regular.ttf") format("truetype");
+  font-weight:400;
+  font-style:normal;
+  font-display:swap;
+}
+
+:root{
+  --bg:#fff;
+  --text:#111;
+  --muted:#d2d2d2;
+  --panel:#efefef;
+  --line:#aaa;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text)}
+body{
+  font-family:Arial,Helvetica,"Apple SD Gothic Neo",sans-serif;
+  font-kerning:normal;
+  font-feature-settings:"kern" 1,"liga" 1;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:geometricPrecision;
+}
+a{color:inherit;text-decoration:none}
+button,input{font:inherit}
+.lang [data-lang]{cursor:pointer;pointer-events:auto}
+
+.type-page{
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* 1 sec opening image */
+.type-intro{
+  position:fixed;
+  inset:0;
+  z-index:120;
+  background:var(--bg);
+  pointer-events:none;
+  transition:background .35s ease;
+}
+.type-mark{
+  position:fixed;
+  left:50%;
+  top:45%;
+  z-index:125;
+  width:min(50vw,620px);
+  height:auto;
+  transform:translate(-50%,-50%) scale(1);
+  transform-origin:center center;
+  will-change:left,top,width,transform;
+  backface-visibility:hidden;
+  transition:
+    left 1.18s cubic-bezier(.16,1,.3,1),
+    top 1.18s cubic-bezier(.16,1,.3,1),
+    width 1.18s cubic-bezier(.16,1,.3,1),
+    transform 1.18s cubic-bezier(.16,1,.3,1);
+  user-select:none;
+  -webkit-user-drag:none;
+}
+body.intro-finished .type-intro{
+  opacity:0;
+  visibility:hidden;
+  transition:
+    opacity .72s cubic-bezier(.16,1,.3,1) .32s,
+    visibility 0s linear 1.18s;
+}
+body.intro-finished .type-mark{
+  left:18px;
+  top:17px;
+  width:132px;
+  transform:translate(0,0) scale(1);
+  z-index:125;
+  pointer-events:auto;
+}
+.type-home{
+  position:fixed;
+  left:0;
+  top:0;
+  z-index:130;
+  width:170px;
+  height:72px;
+  opacity:0;
+  pointer-events:none;
+}
+body.intro-finished .type-home{
+  opacity:1;
+  pointer-events:auto;
+  transition:opacity .16s ease 1.02s;
+}
+
+/* top right site controls */
+.type-top-nav{
+  position:fixed;
+  top:32px;
+  right:32px;
+  z-index:60;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+  gap:2px;
+  font-size:26px;
+  line-height:.91;
+  letter-spacing:-.045em;
+}
+.type-top-nav a{color:var(--muted)}
+.type-top-nav a:hover,
+.type-top-nav a.active{color:var(--text)}
+.type-top-nav .lang{margin-bottom:12px}
+.type-top-nav .lang .off{color:var(--muted)}
+.type-top-nav .lang .on{color:var(--text)}
+
+/* opening blank/preview space */
+.preview-stage{
+  position:relative;
+  min-height:60vh;
+  padding:100px 40px 20px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.preview-text{
+  width:min(88vw,1200px);
+  text-align:center;
+  font-family:"Sangsoo1ee",serif;
+  font-size:clamp(74px,11vw,180px);
+  line-height:.82;
+  letter-spacing:-.035em;
+  overflow-wrap:anywhere;
+  min-height:.9em;
+}
+
+/* controls */
+.controls{
+  width:100%;
+  display:grid;
+  grid-template-columns:minmax(320px,560px) 1fr auto;
+  gap:24px;
+  align-items:end;
+  padding:10px 40px 28px;
+}
+.custom-block{
+  grid-column:1;
+}
+.custom-label{
+  display:block;
+  margin:0 0 7px;
+  font-size:30px;
+  font-weight:700;
+  line-height:.95;
+  letter-spacing:-.05em;
+}
+#customText{
+  width:100%;
+  height:48px;
+  border:2px solid var(--line);
+  border-radius:2px;
+  background:transparent;
+  color:var(--text);
+  padding:3px 10px;
+  font-size:29px;
+  line-height:1;
+  letter-spacing:-.035em;
+  outline:none;
+}
+#customText::placeholder{color:#777}
+#customText:focus{border-color:var(--text)}
+
+.download-wrap{
+  grid-column:3;
+  position:relative;
+  justify-self:end;
+}
+.download-button{
+  border:0;
+  border-radius:0;
+  background:var(--panel);
+  color:var(--text);
+  padding:12px 20px 13px;
+  font-size:28px;
+  font-weight:700;
+  line-height:1;
+  letter-spacing:-.045em;
+  cursor:pointer;
+}
+.download-menu{
+  position:absolute;
+  right:0;
+  top:calc(100% + 3px);
+  min-width:100%;
+  display:none;
+  background:var(--panel);
+  z-index:10;
+}
+.download-wrap.open .download-menu{display:block}
+.download-menu a{
+  display:block;
+  padding:9px 13px;
+  font-size:15px;
+  line-height:1;
+  letter-spacing:-.035em;
+  white-space:nowrap;
+}
+.download-menu a:hover{background:var(--text);color:var(--bg)}
+
+.license{
+  padding:2px 40px 92px;
+  font-size:15px;
+  font-weight:600;
+  line-height:1.12;
+  letter-spacing:-.045em;
+}
+
+/* specimen */
+.specimen{
+  width:100%;
+  padding:20px 40px 0;
+}
+.atoz{
+  display:block;
+  width:min(58vw,820px);
+  height:auto;
+  margin:0 auto 120px;
+}
+.type-gallery{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:12px;
+  width:100%;
+  height:clamp(190px,24vw,360px);
+  align-items:center;
+  padding-bottom:28px;
+}
+.type-gallery img{
+  display:block;
+  width:100%;
+  height:100%;
+  max-width:100%;
+  max-height:100%;
+  object-fit:contain;
+  object-position:center;
+}
+
+/* custom moving cursor: same size + glow as rest of site */
+@media(pointer:fine){
+  html,body,a,button,input{cursor:none!important}
+  .custom-cursor{
+    position:fixed;left:0;top:0;width:42px;height:42px;z-index:99999;
+    pointer-events:none;transform:translate(-50%,-50%);opacity:0;
+    background:url("cursor2.svg") center/contain no-repeat;
+    filter:drop-shadow(0 0 3px rgba(127,127,127,.32));
+    transition:opacity .12s ease;
+  }
+  .custom-cursor::before{
+    content:"";position:absolute;left:50%;top:50%;width:78px;height:78px;
+    transform:translate(-50%,-50%);border-radius:50%;z-index:-1;
+    background:radial-gradient(circle,rgba(127,127,127,.18) 0%,rgba(127,127,127,.10) 34%,rgba(127,127,127,.045) 56%,rgba(127,127,127,0) 74%);
+    filter:blur(5px);
+  }
+  body.cursor-ready .custom-cursor{opacity:1}
+}
+
+@media(max-width:700px){
+  body.intro-finished .type-mark{left:12px;top:12px;width:92px}
+  .type-home{width:120px;height:54px}
+  .type-top-nav{top:16px;right:16px;font-size:18px}
+  .type-top-nav .lang{margin-bottom:8px}
+  .preview-stage{min-height:52vh;padding:80px 18px 10px}
+  .preview-text{font-size:clamp(56px,17vw,110px)}
+  .controls{
+    grid-template-columns:1fr auto;
+    gap:16px;
+    padding:8px 18px 18px;
+  }
+  .custom-block{grid-column:1}
+  .custom-label{font-size:22px}
+  #customText{height:42px;font-size:21px}
+  .download-wrap{grid-column:2}
+  .download-button{font-size:20px;padding:10px 13px}
+  .license{padding:2px 18px 64px;font-size:12px;line-height:1.12;letter-spacing:-.04em}
+  .specimen{padding:0 18px}
+  .atoz{width:88vw;margin-bottom:64px}
+  .type-gallery{gap:6px;height:clamp(110px,28vw,180px)}
+}
+</style>
+
+<link rel="stylesheet" href="theme.css">
+<script>
+document.documentElement.dataset.theme =
+  localStorage.getItem('sangsoo1ee-theme') === 'dark' ? 'dark' : 'light';
+</script>
+</head>
+
+<body class="type-page">
+  <div class="type-intro" aria-hidden="true"></div>
+
+  <img class="type-mark" id="typeMark" src="maintype.webp" alt="Sangsoo1ee typeface">
+  <a class="type-home" href="index.html" aria-label="Home"></a>
+
+  <div class="type-top-nav">
+    <div class="lang"><span data-lang="ko" class="off">KR</span>/<span data-lang="en" class="on">EN</span></div>
+    <a href="trysm.html" data-i18n="tryon">TRY-ON</a>
+    <a href="type.html" class="active" data-i18n="type">TYPE</a>
+  </div>
+
+  <main>
+    <section class="preview-stage">
+      <div class="preview-text" id="previewText" aria-live="polite"></div>
+    </section>
+
+    <section class="controls">
+      <div class="custom-block">
+        <label class="custom-label" for="customText" data-i18n="customPreview">Custom preview</label>
+        <input id="customText" type="text" placeholder="Type your text here" data-i18n-placeholder="previewPlaceholder" autocomplete="off" spellcheck="false">
+      </div>
+
+      <div class="download-wrap" id="downloadWrap">
+        <button class="download-button" id="downloadButton" type="button" aria-expanded="false" data-i18n="download">Download</button>
+        <div class="download-menu">
+          <a href="Sangsoo1ee-Regular.otf" download>OTF</a>
+          <a href="Sangsoo1ee-Regular.ttf" download>TTF</a>
+        </div>
+      </div>
+    </section>
+
+    <div class="license">
+      <span data-i18n="license1">free for personal use only</span><br>
+      <span data-i18n="license2">typeface by sangsoo1ee</span>
+    </div>
+
+    <section class="specimen">
+      <img class="atoz" src="atoz.webp" alt="Sangsoo1ee alphabet specimen">
+      <div class="type-gallery">
+        <img src="type1.webp" alt="">
+        <img src="type2.webp" alt="">
+        <img src="type3.webp" alt="">
+        <img src="type4.webp" alt="">
+      </div>
+    </section>
+  </main>
+
+<script>
+(() => {
+  const preview = document.getElementById('previewText');
+  const input = document.getElementById('customText');
+  const downloadWrap = document.getElementById('downloadWrap');
+  const downloadButton = document.getElementById('downloadButton');
+
+  const translations = {
+    en: {
+      tryon:'TRY-ON', type:'TYPE', customPreview:'Custom preview',
+      previewPlaceholder:'Type your text here', download:'Download',
+      license1:'free for personal use only', license2:'typeface by sangsoo1ee'
+    },
+    ko: {
+      tryon:'타투 체험', type:'서체', customPreview:'직접 써보기',
+      previewPlaceholder:'원하는 문구를 입력하세요', download:'다운로드',
+      license1:'개인 용도에 한해 무료 사용', license2:'sangsoo1ee가 디자인한 서체'
+    }
+  };
+  const languageButtons = [...document.querySelectorAll('.lang [data-lang]')];
+
+  function applyLanguage(lang){
+    const selected = translations[lang] ? lang : 'en';
+    document.documentElement.lang = selected;
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const value = translations[selected][el.dataset.i18n];
+      if(value) el.textContent = value;
+    });
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+      const value = translations[selected][el.dataset.i18nPlaceholder];
+      if(value) el.placeholder = value;
+    });
+    languageButtons.forEach(btn => {
+      btn.classList.toggle('on', btn.dataset.lang === selected);
+      btn.classList.toggle('off', btn.dataset.lang !== selected);
+    });
+    localStorage.setItem('sangsoo1ee-language', selected);
+  }
+
+  languageButtons.forEach(btn => btn.addEventListener('click', () => applyLanguage(btn.dataset.lang)));
+  applyLanguage(localStorage.getItem('sangsoo1ee-language') || 'en');
+
+  // 1 second centered, then smoothly shrink and move maintype to the upper-left.
+  window.setTimeout(() => {
+    document.body.classList.add('intro-finished');
+  }, 1000);
+
+  input.addEventListener('input', () => {
+    preview.textContent = input.value;
+  });
+
+  downloadButton.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const open = downloadWrap.classList.toggle('open');
+    downloadButton.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+
+  document.addEventListener('click', () => {
+    downloadWrap.classList.remove('open');
+    downloadButton.setAttribute('aria-expanded', 'false');
+  });
+
+  // Moving cursor.
+  if (window.matchMedia('(pointer:fine)').matches) {
+    const cursor = document.createElement('div');
+    cursor.className = 'custom-cursor';
+    document.body.appendChild(cursor);
+    window.addEventListener('mousemove', (e) => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top = e.clientY + 'px';
+      document.body.classList.add('cursor-ready');
+    }, {passive:true});
+    window.addEventListener('mouseleave', () => document.body.classList.remove('cursor-ready'));
+  }
+})();
+</script>
+
+<script src="theme.js"></script>
+</body>
+</html>
