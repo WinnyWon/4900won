@@ -1,0 +1,1373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>
+const sangsooNavEntry = performance.getEntriesByType("navigation")[0];
+const sangsooIsReload = sangsooNavEntry && sangsooNavEntry.type === "reload";
+
+if (
+  sessionStorage.getItem("sangsoo1ee-intro-shown") === "1" &&
+  !sangsooIsReload
+) {
+  document.documentElement.classList.add("skip-watermark-intro");
+}
+</script>
+
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>sangsoo1ee</title>
+
+<meta property="og:title" content="sangsoo1ee" />
+<meta property="og:site_name" content="sangsoo1ee" />
+<meta property="og:type" content="website" />
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+html,body{
+  width:100%;
+  min-height:100%;
+  overflow-x:hidden;
+  overflow-y:auto;
+  background:#fff;
+  font-family:Helvetica, Arial, sans-serif;
+}
+
+body{
+  position:relative;
+}
+
+.loading-screen{
+  position:fixed;
+  inset:0;
+  z-index:1000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#fff;
+  opacity:1;
+  visibility:visible;
+  transition:opacity .25s ease, visibility .25s ease;
+}
+
+.loading-screen.is-hidden{
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+}
+
+.loading-screen img{
+  width:100vw;
+  height:100vh;
+  object-fit:contain;
+  object-position:center;
+  display:block;
+}
+
+nav{
+  position:fixed;
+  top:34px;
+  left:32px;
+  z-index:50;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:14px;
+  font-size:26px;
+  line-height:1;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .8s ease;
+}
+
+body.loaded nav{
+  opacity:1;
+  pointer-events:auto;
+}
+
+nav a{
+  text-decoration:none;
+  color:#d2d2d2;
+  font-family:Helvetica, Arial, sans-serif;
+  font-size:26px;
+  font-weight:300;
+  line-height:1;
+  transition:color .25s ease;
+}
+
+nav a:hover{
+  color:#111;
+}
+
+nav .home{
+  display:block;
+  width:132px;
+  height:auto;
+  margin-bottom:16px;
+  line-height:0;
+}
+
+nav .home img{
+  display:block;
+  width:132px;
+  height:auto;
+}
+
+nav .home:hover img{
+  opacity:.7;
+}
+
+.lang-switch{
+  position:fixed;
+  top:34px;
+  right:32px;
+  z-index:50;
+  font-family:Helvetica, Arial, sans-serif;
+  font-size:26px;
+  font-weight:300;
+  line-height:1;
+  color:#d2d2d2;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .8s ease;
+}
+
+body.loaded .lang-switch{
+  opacity:1;
+  pointer-events:auto;
+}
+
+.lang-switch .active{
+  color:#111;
+}
+
+.graphic-stage{
+  position:relative;
+  width:100%;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#fff;
+  opacity:0;
+  transition:opacity .25s ease;
+}
+
+body.start-main .graphic-stage{
+  opacity:1;
+}
+
+#mainGraphic{
+  width:145vw;
+  max-width:none;
+  height:auto;
+  margin-top:0;
+  overflow:visible;
+  transform:rotate(18deg);
+  transform-origin:50% 50%;
+  filter:
+    drop-shadow(0 0 7px rgba(170,20,20,.22))
+    drop-shadow(0 0 18px rgba(205,35,35,.15))
+    drop-shadow(0 0 42px rgba(245,65,65,.095))
+    drop-shadow(0 0 68px rgba(255,95,95,.045));
+}
+
+#mainGraphic.draw{
+  animation:bloodGlow 2.8s ease forwards;
+}
+
+@keyframes bloodGlow{
+  0%{
+    filter:
+      drop-shadow(0 0 5px rgba(170,20,20,.18))
+      drop-shadow(0 0 15px rgba(205,35,35,.12))
+      drop-shadow(0 0 36px rgba(245,65,65,.075))
+      drop-shadow(0 0 60px rgba(255,95,95,.035));
+  }
+  45%{
+    filter:
+      drop-shadow(0 0 9px rgba(170,20,20,.26))
+      drop-shadow(0 0 24px rgba(205,35,35,.18))
+      drop-shadow(0 0 52px rgba(245,65,65,.11))
+      drop-shadow(0 0 78px rgba(255,95,95,.05));
+  }
+  100%{
+    filter:
+      drop-shadow(0 0 7px rgba(170,20,20,.22))
+      drop-shadow(0 0 18px rgba(205,35,35,.15))
+      drop-shadow(0 0 42px rgba(245,65,65,.095))
+      drop-shadow(0 0 68px rgba(255,95,95,.045));
+  }
+}
+
+.cls-1{
+  fill:none;
+  stroke:#000;
+  stroke-width:1.5px;
+}
+
+#mainGraphic path,
+#mainGraphic circle,
+#mainGraphic ellipse,
+#mainGraphic line,
+#mainGraphic polyline,
+#mainGraphic polygon{
+  fill:none !important;
+}
+
+#info,
+#works,
+#shop{
+  cursor:pointer;
+}
+
+#info *,
+#works *,
+#shop *{
+  vector-effect:non-scaling-stroke;
+  transition:stroke .25s ease, opacity .25s ease, stroke-width .25s ease;
+}
+
+body:not(.loaded) #info,
+body:not(.loaded) #works,
+body:not(.loaded) #shop{
+  opacity:1;
+}
+
+body.loaded #info *,
+body.loaded #works *,
+body.loaded #shop *{
+  stroke:#cfcfcf;
+}
+
+body.loaded #info:hover *,
+body.loaded #works:hover *,
+body.loaded #shop:hover *{
+  stroke:#111;
+  stroke-width:1.8px;
+}
+
+body.loaded.has-hover #info,
+body.loaded.has-hover #works,
+body.loaded.has-hover #shop{
+  opacity:.28;
+}
+
+body.loaded.has-hover #info.is-active,
+body.loaded.has-hover #works.is-active,
+body.loaded.has-hover #shop.is-active{
+  opacity:1;
+}
+
+
+/* === synced hover states: menu <-> graphic === */
+body.loaded .nav-link.is-active{
+  color:#111;
+}
+
+body.loaded #info.is-active *,
+body.loaded #works.is-active *,
+body.loaded #shop.is-active *{
+  stroke:#111;
+  stroke-width:1.8px;
+}
+
+body.loaded.has-hover #info:not(.is-active),
+body.loaded.has-hover #works:not(.is-active),
+body.loaded.has-hover #shop:not(.is-active){
+  opacity:.28;
+}
+
+#info,
+#works,
+#shop{
+  pointer-events:visiblePainted;
+}
+
+@keyframes drawLine{
+  to{ stroke-dashoffset:0; }
+}
+
+
+
+.footer-panel{
+  position:relative;
+  width:100%;
+  min-height:382px;
+  background:#000;
+  color:#fff;
+  z-index:30;
+  padding:28px 30px 22px;
+  font-family:Arial,Helvetica,"Apple SD Gothic Neo",sans-serif;
+  font-weight:500;
+  letter-spacing:-.045em;
+}
+.footer-about-image{
+  position:absolute;
+  left:34px;
+  top:28px;
+  width:270px;
+  height:203px;
+  object-fit:cover;
+  display:block;
+}
+.footer-bio{
+  position:absolute;
+  left:335px;
+  top:32px;
+  max-width:610px;
+  font-size:19px;
+  line-height:1.13;
+}
+.footer-bio .name{
+  display:block;
+  margin-bottom:12px;
+  font-size:27px;
+  line-height:1;
+  text-transform:uppercase;
+}
+.footer-contact{
+  position:absolute;
+  right:30px;
+  top:30px;
+  text-align:right;
+  font-size:19px;
+  line-height:1.13;
+}
+.footer-contact .title,
+.footer-tattoo .title{
+  display:block;
+  margin-bottom:10px;
+  font-size:27px;
+  line-height:1.05;
+}
+.footer-contact a{display:block}
+.footer-copyright{
+  position:absolute;
+  left:30px;
+  bottom:22px;
+  font-size:17px;
+  line-height:1;
+}
+.footer-tattoo{
+  position:absolute;
+  right:30px;
+  bottom:22px;
+  text-align:right;
+  font-size:19px;
+  line-height:1.13;
+}
+
+/* Slightly widen the small footer copy without changing layout */
+.footer-bio,
+.footer-contact,
+.footer-copyright,
+.footer-tattoo {
+  font-stretch: semi-expanded;
+  letter-spacing: -0.025em;
+}
+
+@media(max-width:700px){
+  nav{
+    top:18px;
+    left:18px;
+    gap:10px;
+    font-size:18px;
+  }
+
+  nav a{
+    font-size:18px;
+  }
+
+  nav .home{
+    width:86px;
+    margin-bottom:10px;
+  }
+
+  nav .home img{
+    width:86px;
+  }
+
+  .lang-switch{
+    top:18px;
+    right:18px;
+    font-size:18px;
+  }
+
+  #mainGraphic{
+    width:175vw;
+    max-width:none;
+    margin-top:0;
+    transform:rotate(18deg);
+    transform-origin:50% 50%;
+  }
+
+  .footer-panel{min-height:560px;padding:22px 16px}
+  .footer-about-image{left:16px;top:22px;width:39vw;height:29vw}
+  .footer-bio{left:calc(39vw + 30px);right:16px;top:22px;max-width:none;font-size:12px;line-height:1.12}
+  .footer-bio .name{font-size:17px;margin-bottom:8px}
+  .footer-contact{right:16px;top:205px;font-size:13px}
+  .footer-contact .title,.footer-tattoo .title{font-size:17px;margin-bottom:6px;line-height:1.05}
+  .footer-copyright{left:16px;bottom:18px;font-size:11px}
+  .footer-tattoo{right:16px;bottom:18px;font-size:13px}
+}
+a{color:inherit;text-decoration:none;}a:hover{text-decoration:underline;}
+
+/* Signature try-on navigation */
+.tryon-link{
+  position:fixed;
+  top:78px;
+  right:32px;
+  z-index:50;
+  display:inline-block;
+  color:#d2d2d2;
+  font-family:Helvetica, Arial, sans-serif;
+  font-size:26px;
+  font-weight:300;
+  line-height:1;
+  text-decoration:none;
+  white-space:nowrap;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .8s ease, color .25s ease;
+}
+body.loaded .tryon-link{
+  opacity:1;
+  pointer-events:auto;
+}
+.tryon-link:hover,
+.tryon-link:focus-visible{
+  color:#111;
+  text-decoration:none;
+}
+.tryon-link .tryon-note{
+  position:absolute;
+  right:calc(100% + 14px);
+  top:50%;
+  transform:translateY(-50%);
+  color:#111;
+  font-size:12px;
+  font-weight:300;
+  line-height:1;
+  white-space:nowrap;
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  transition:opacity .2s ease, visibility .2s ease;
+}
+.tryon-link:hover .tryon-note,
+.tryon-link:focus-visible .tryon-note{
+  opacity:1;
+  visibility:visible;
+}
+@media(max-width:700px){
+  .tryon-link{
+    top:56px;
+    right:18px;
+    font-size:13px;
+  }
+  .tryon-link .tryon-note{
+    right:0;
+    top:calc(100% + 8px);
+    transform:none;
+    font-size:10px;
+  }
+}
+
+.lang-switch [data-lang]{cursor:pointer;pointer-events:auto;}
+
+/* Korean glyphs need a slightly stronger weight to visually match Helvetica Light. */
+html[lang="ko"] [data-i18n],
+html[lang="ko"] .lang-switch {
+  font-weight:400;
+}
+
+/* =============================================
+   APOD-inspired typography pass
+   Font sizes intentionally preserved.
+   ============================================= */
+html, body, button, input, select, textarea {
+  font-family: Arial, Helvetica, "Apple SD Gothic Neo", sans-serif;
+  font-kerning: normal;
+  font-synthesis: none;
+  font-feature-settings: "kern" 1, "liga" 1;
+  text-rendering: geometricPrecision;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+body, a, button, span, p, h1, h2, h3, h4, h5, h6 {
+  letter-spacing: -0.045em;
+}
+
+nav { gap: 2px; line-height: .91; }
+nav a { font-family: Arial, Helvetica, "Apple SD Gothic Neo", sans-serif; font-weight: 400; line-height: .91; }
+.lang-switch { font-family: Arial, Helvetica, "Apple SD Gothic Neo", sans-serif; font-weight: 400; line-height: .91; }
+/* informational copy keeps the same px sizes but adopts APOD's dense setting */
+.info-panel, .info-panel *, .mobile-info, .mobile-info * { letter-spacing: -0.035em; }
+
+
+
+/* TYPE navigation — directly below TRY-ON */
+.type-link{
+  position:fixed;
+  top:108px;
+  right:32px;
+  z-index:50;
+  display:inline-block;
+  color:#d2d2d2;
+  font-family:Arial, Helvetica, "Apple SD Gothic Neo", sans-serif;
+  font-size:26px;
+  font-weight:400;
+  line-height:.91;
+  letter-spacing:-0.045em;
+  text-decoration:none;
+  white-space:nowrap;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .8s ease, color .25s ease;
+}
+body.loaded .type-link{
+  opacity:1;
+  pointer-events:auto;
+}
+.type-link:hover,
+.type-link:focus-visible{
+  color:#111;
+  text-decoration:none;
+}
+@media(max-width:700px){
+  .type-link{
+    top:76px;
+    right:18px;
+    font-size:13px;
+  }
+}
+
+/* Custom cursor */
+@media (pointer:fine){
+  html, body, a, button, [role="button"], .interactive, [data-lang], #info, #works, #shop { cursor:none !important; }
+  .custom-cursor{
+    position:fixed; left:0; top:0; width:42px; height:42px; z-index:99999;
+    pointer-events:none; transform:translate(-50%,-50%); opacity:0;
+    background:url("cursor2.svg") center/contain no-repeat;
+    filter:drop-shadow(0 0 3px rgba(127,127,127,.32));
+    transition:opacity .12s ease;
+  }
+  .custom-cursor::before{
+    content:""; position:absolute; left:50%; top:50%; width:78px; height:78px;
+    transform:translate(-50%,-50%); border-radius:50%; z-index:-1;
+    background:radial-gradient(circle, rgba(127,127,127,.18) 0%, rgba(127,127,127,.10) 34%, rgba(127,127,127,.045) 56%, rgba(127,127,127,0) 74%);
+    filter:blur(5px);
+  }
+  body.cursor-ready .custom-cursor{opacity:1;}
+}
+
+
+html.skip-watermark-intro .loading-screen{
+  display:none !important;
+}
+
+</style>
+<link rel="stylesheet" href="theme.css">
+<script>document.documentElement.dataset.theme=localStorage.getItem('sangsoo1ee-theme')==='dark'?'dark':'light';</script>
+</head>
+
+<body>
+
+<div class="loading-screen" id="loadingScreen">
+  <img id="loadingImage" alt="" />
+</div>
+
+<nav>
+  <a href="index.html" class="home">
+    <img src="./nametag.svg" alt="Home">
+  </a>
+
+  <a href="info.html" class="nav-link nav-info" data-target="info" data-i18n="info">INFO</a>
+  <a href="works.html" class="nav-link nav-works" data-target="works" data-i18n="works">WORKS</a>
+  <a href="shop.html" class="nav-link nav-shop" data-target="shop" data-i18n="shop">SHOP</a>
+</nav>
+
+<div class="lang-switch">
+  <span data-lang="ko">KR</span>/<span class="active" data-lang="en">EN</span>
+</div>
+
+<a href="trysm.html" class="tryon-link">
+  <span data-i18n="tryon">TRY-ON</span>
+  <span class="tryon-note" data-i18n="monthly">try on tats</span>
+</a>
+
+<a href="type.html" class="type-link" data-i18n="type">TYPE</a>
+
+<main class="graphic-stage">
+
+<svg id="mainGraphic" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1102.085 418.464">
+  <defs>
+    <style>
+      .cls-1{fill:none;stroke:#000;stroke-width:1.5px;}
+    a{color:inherit;text-decoration:none;}a:hover{text-decoration:underline;}</style>
+  </defs>
+  <g id="info">
+    <g>
+      <path class="cls-1" d="M941.335.75h8l1,1h10l1,1h7l1,1h4l4,2h3l3,2h5l3,2h2l3,2h2l2,2,5,2,2,2h2l2,2,6,3v1l2,1,3,3v1l5,4,1,2h2l10,9h6l1-1h15"/>
+      <path class="cls-1" d="M940.335,1.75h-6l-1,1h-3"/>
+      <path class="cls-1" d="M1022.335,29.75v1l-2,2v-1l-4-2v-2h-2l-1-1"/>
+      <path class="cls-1" d="M1040.335,44.75v7l1,1h4l1,1,1-1v-7l-1-1"/>
+      <path class="cls-1" d="M1021.335,33.75h1l6,7,3,6h8"/>
+      <path class="cls-1" d="M1040.335,52.75l-4,1-1,1v-1l-3-3h-1l-1-4"/>
+      <path class="cls-1" d="M1047.335,53.75h1l4-3h3l3-3,6,1"/>
+      <path class="cls-1" d="M1047.335,54.75v6l1,1h4l1,1h3l2,1"/>
+      <path class="cls-1" d="M1046.335,54.75l-1,1v-1l-1,2-2,1v1l-4,2,1,2h7l1-1v2l1,1h4l1-1,4,3h2l1-1"/>
+      <path class="cls-1" d="M1049.335,54.75l2,2h7l1-1v-2l-1-2-2-1,1-1"/>
+      <path class="cls-1" d="M1059.335,67.75l4,4v1l2,2h1l4-4,2-4,2,2v5l1,1v3l-1,1v-1h-1v-3h1"/>
+      <path class="cls-1" d="M1034.335,60.75l-4,1-1,1v-1h-4l-1,1v-1"/>
+      <path class="cls-1" d="M1036.335,63.75v8l1,1v3l2,4h3l7-5v-4l-2-2v-2"/>
+      <path class="cls-1" d="M1060.335,55.75l1,1h2l6,6v2l2,1"/>
+      <path class="cls-1" d="M1064.335,74.75v4l2,2v2l1,1h1l3-3h2l1-1v1l2,2v2l1,1h2l5-7,2-4v-3"/>
+      <path class="cls-1" d="M1028.335,63.75l-1,2v5l-2,1v-3h1"/>
+      <path class="cls-1" d="M1038.335,79.75l3,6,1,1h2l4,4h1l1-1v-6l2-1-1-4-1-2h-1"/>
+      <path class="cls-1" d="M1037.335,79.75v1h-3l-2,2v6l2,2h2l1-1h3l1-1v-2"/>
+      <path class="cls-1" d="M1063.335,78.75l-2,2v-1l-1,1v3l-2,1v-3l1-1v1"/>
+      <path class="cls-1" d="M1077.335,86.75l-1,3-2,1v3l2,2,1-1v-2l-1-1"/>
+      <path class="cls-1" d="M1024.335,72.75l1,2v5l3,3h3"/>
+      <path class="cls-1" d="M1050.335,90.75l1,1h2l4-4,1-2,2,2h7l1-2"/>
+      <path class="cls-1" d="M1032.335,89.75v5l1,1h3l1-1v-4"/>
+      <path class="cls-1" d="M1073.335,90.75l-1,1v-2l-2,1v-3h-2"/>
+      <path class="cls-1" d="M1024.335,79.75v1l-2,1v2l1,1h3l1-2"/>
+      <path class="cls-1" d="M1019.335,73.75l-1,1v7l1,1h2"/>
+      <path class="cls-1" d="M1046.335,93.75v2l3,3h4l1,1,2-2v-2l1-1h5l2-2v-4"/>
+      <path class="cls-1" d="M1031.335,92.75l-2,1v-1l-1,1v2l1,1h2l1-1v1"/>
+      <path class="cls-1" d="M1076.335,97.75v3l2,1v1l4,4v2l1,1v6l-1,1,1,2v4l1,1h5l2-2,3-1,3-5,1-6,1-1v-10l2-3v-2"/>
+      <path class="cls-1" d="M1018.335,82.75l-1,1v-1l-2,2v-1h-3l-1,1h-5l-1,1h-2l-2,2v-1l-1,2-2,1v-1l-2,3-2,1v-1l-2,4v4l1,2,2,1v1l2,2,5,10,1,5,3,6"/>
+      <path class="cls-1" d="M1048.335,98.75l1,1v3l4,3h1l1-1v-2h5l1-1v-6"/>
+      <path class="cls-1" d="M1063.335,94.75h4l2-1-1,1,1,2v5l-2,1v3l1,1h3l1-2h1l2-2v-1h1"/>
+      <path class="cls-1" d="M1039.335,97.75l1,1v2l3,3h6"/>
+      <path class="cls-1" d="M1082.335,113.75l-2-2v-1l-2-1h-4l-2,2v-5h1l1-2"/>
+      <path class="cls-1" d="M1082.335,118.75h-2l-1,2h-1l-2,2v-1l-1,1v2l-1,1v-1l-1,2,1,1v4l2,1,5-4v-2l2-1v-2"/>
+      <path class="cls-1" d="M1015.335,85.75v13l1,1,1,4,4,3,2-2v-2l4-2v-2"/>
+      <path class="cls-1" d="M991.335,97.75l-1,1v-1l-1,1h-3l-1,1-1-3-2-2h-1l-1,1v3l2,3h2l1-1v1l2,2h4l2-1-2,2v1l3,4,4,8v2l1,1v2l1,1v2l2,4v3l1,1v2l2,4v5l1,1v11l2,2h3l1-1v-3h1l2-2v-3l2-3v-7h-1v-4l2-2,1-4,3-3,1-6,1-1v-2l-3-3v-7l2-2"/>
+      <path class="cls-1" d="M1072.335,112.75v4l1,1-1,2-1,1v-1l-4-2v-2l4-2"/>
+      <path class="cls-1" d="M1074.335,132.75l-1,1v4l1,1h2l2-2v-3l2-1,3-6"/>
+      <path class="cls-1" d="M979.335,95.75l-2-4h-2l-1-2-5-2v-1h-2v-1h-2l-4-3h-2v-1h-2l-3-2h-3l-1-1h-2l-4-2-12-1"/>
+      <path class="cls-1" d="M1007.335,158.75v4l1,1h3l1-1v-4"/>
+      <path class="cls-1" d="M1011.335,153.75l-1-1v-6h-1v-7l1-1h2l2,2,1-1"/>
+      <path class="cls-1" d="M1015.335,135.75v-3l-1-1v-5l3-4,1-6,2-2v1"/>
+      <path class="cls-1" d="M1020.335,129.75l2-2h2l2,2h1v2l2,2h3l4,2h8l1-1h3l1,1,3-3v-3l4-1,1-1,2,1,1,2,7-1,4-2-1,1v2l2,2"/>
+      <path class="cls-1" d="M1025.335,119.75h2l10,5,8,1,2-2,1-4h10l4-4v-2l3-2v-3"/>
+      <path class="cls-1" d="M1035.335,105.75v7l1,1h2l1,1h6l1-1h2l2-2h2v2h-2v-1"/>
+      <path class="cls-1" d="M1073.335,138.75v1l-2,1,1,1-1,1v7l-1,1v2l-1,1v-1"/>
+      <path class="cls-1" d="M1010.335,164.75v2l-1,1v6l2,2h1l2,3h3l1,1h11l1,1h2l4-4,1-2,3-1,2-2,4-7,2,1,1-1,1-4,2-3v-5h-1l-1-4h1l3-3,1-7,5-6v-1"/>
+      <path class="cls-1" d="M1023.335,128.75l1,6,2,2h1l1-1v-2"/>
+      <path class="cls-1" d="M1070.335,140.75l-2,1v-1l-2,2v-1l-5,3h-4l-1,1v-1l-1,1,6,5,3-3,2,1"/>
+      <path class="cls-1" d="M1005.335,166.75l-1,1v6l-2,2v-1l-1,1v-2h-2l-1-1,2-4h3"/>
+      <path class="cls-1" d="M1030.335,181.75v2l-3,5v3l1,1,4-1"/>
+      <path class="cls-1" d="M1036.335,178.75l4,2,2-2h1l1-1v-2l3-1,1-2"/>
+      <path class="cls-1" d="M1049.335,165.75l2,2h1l3-3,6-1,6-7"/>
+      <path class="cls-1" d="M1050.335,152.75h-1v-3h-8l-4-3v-2h2l1,1h7l2,2"/>
+      <path class="cls-1" d="M1027.335,137.75l1,1,1,5,1,1,5-1,1,2h-3v-1"/>
+      <path class="cls-1" d="M997.335,172.75l-2,1h-1v-1l-1,1h-3v-3h2l1,1"/>
+      <path class="cls-1" d="M989.335,170.75h-1v-1l-2-1-1-3h-1l-2-2v-1h-1v-2l-2-1v-6l-1-2-2,2v2l2,2"/>
+      <path class="cls-1" d="M1026.335,194.75l1,2h-2v-1l-1,2-1,1v-1l-1,2-1,1v-1l-4,4v-1l-4,3-6,3v-1l-3,3v-1h-4l-1,1v-1l-2,2v-1l-1,1,2,2v1l-2,1h-3"/>
+      <path class="cls-1" d="M999.335,186.75l-4,8-6,6v2l2,2,7-8v-1l4-5"/>
+      <path class="cls-1" d="M977.335,150.75v-2h-1v-4h-1v-3h-1v-2l-1-1v-13l2-2,1-8,2-2,1-3"/>
+      <path class="cls-1" d="M995.335,211.75h-3l-3-2v-5h1"/>
+      <path class="cls-1" d="M988.335,210.75v-1l-1,1h-2l-5,4v-1h-2l-2,2v1l1,1h3l1-2,1,1h9"/>
+      <path class="cls-1" d="M974.335,217.75l1,1-1,1-1-2h-2l-1,1v-1h-2l-1,1h-4"/>
+      <path class="cls-1" d="M969.335,221.75l-2,1h-6l-1,1h-10v-3h5l2-2v-2l1-1v-6l1-1"/>
+      <path class="cls-1" d="M949.335,223.75h-4l-1-1,1-2h4"/>
+      <path class="cls-1" d="M959.335,211.75h2l2-2-1-1v-5l1-1v-6l1-1v-3l-2-4v-3l-2-1-2-5h-1v-2h-1v-1h-1l-1-2-6-3h-14l-1,1h-2l-4,2v-1l-3-3v-5l-1-1h-2v-5"/>
+      <path class="cls-1" d="M943.335,222.75l-2,1v-1l-2-1v-2l1-1v-4l2-1"/>
+      <path class="cls-1" d="M929.335,175.75l1,2-1,2v2l1,1v2l-1,1,1,4-2,1v-3h1"/>
+      <path class="cls-1" d="M920.335,163.75l-1-1h-2v-1h-1l-2-2v-2l-1-1-3-1v-1h-1v-1l-2-1h-3l-1-2h-6l-1,1v-1l-3,2v-1l-7,5v-1"/>
+      <path class="cls-1" d="M941.335,224.75v2l-2,1v2l-1,1v-1l-2-2-1,1v-2l-2-1v-2l1-1h3l1-1"/>
+      <path class="cls-1" d="M938.335,219.75l-3-2,1-2v-10l1-1v-7l-3-2-1,1v-3l-2-1h-2l-1-1-1,1v-1l-2,2v-1"/>
+      <path class="cls-1" d="M927.335,189.75l-2-2v-10h1"/>
+      <path class="cls-1" d="M913.335,159.75l-1,1v-1h-5l-1,1v-1h-10l-1,1v-1l-2,2v-1h-5l-1,1v-1l-1,1,1,1v2l2,1v1l2,2h1l1,2h1l1-1v-3l-2-4"/>
+      <path class="cls-1" d="M886.335,157.75l-1,1v3h-2l-4,2v3l2,3,3-1,2-3h1l-1,1"/>
+      <path class="cls-1" d="M932.335,225.75h-3l-4-2-1-2-2-1v-2l1-1h7l3-6,2-1"/>
+      <path class="cls-1" d="M924.335,194.75v3l-1,2-2,2h-3v-3l2-2h2l1-1"/>
+      <path class="cls-1" d="M924.335,177.75h-2l-1,1v-5l-4-2v-1l-1,1h-3l-1,1v-1l-1,2,1,1h5l2,2h1"/>
+      <path class="cls-1" d="M896.335,169.75l7,5h4l1-1h2"/>
+      <path class="cls-1" d="M878.335,167.75l-2,1v-2h-7l-2,2v-1"/>
+      <path class="cls-1" d="M921.335,220.75l-1,1v-3l1-2h-1v-3l-1-1v-2l-2-2v-3l-1-1v-2l1-1v1"/>
+      <path class="cls-1" d="M917.335,197.75l-2-2-1-6,2-3v-2l3-3v-1l1-1v1"/>
+      <path class="cls-1" d="M905.335,175.75l-1,2v4l1,1v2l4,5,4,1"/>
+      <path class="cls-1" d="M867.335,169.75l-1,1v-1h-2l-1,1h-4l-2,2v-1l-1,1,5,5h3l1-1,1-2v-3l2,2h4l1-1,1,1,2-1,2,1-1,2v4l-1,1v-1l-3-1v-2h2l1,1"/>
+      <path class="cls-1" d="M919.335,222.75h-4l-1,1v-10l1-1v-3l1-1v1"/>
+      <path class="cls-1" d="M915.335,203.75l-2,1v3h-2v-2h1"/>
+      <path class="cls-1" d="M903.335,181.75h-5v-2h-1l-1-4-1-1h-3l-1,1-1-2"/>
+      <path class="cls-1" d="M908.335,189.75l-1,1v-1h-4l-2-1-1-2-2-2h-1v-3h-1v-2"/>
+      <path class="cls-1" d="M856.335,173.75l2,2-1,1h-1v-1l-1,1v-7h-1v-2l-2,2,2,2h-2v-1l-3,2v-3h-1v-1l-4-2v-1l2-2v-4l2-2v3l4,3,1,3"/>
+      <path class="cls-1" d="M877.335,181.75l7,1,2-1,4-4v-1h1"/>
+      <path class="cls-1" d="M913.335,224.75v-1l-1,1-1,4-2,2v1l-2,2v-1"/>
+      <path class="cls-1" d="M913.335,215.75h-3l-2-1v-7h2"/>
+      <path class="cls-1" d="M896.335,185.75v-1l-1,1,1,1v7l1,1v4l-1,1v-1"/>
+      <path class="cls-1" d="M848.335,173.75l-1,2,4,4h2l1-1v1l1,1h2l2,3h6l2,2h2l1,1,1,5,3,3h1v3l1,1h1l2-2,2-4v-5l2-2v-2"/>
+      <path class="cls-1" d="M843.335,167.75v-2h-2l-1,1v-1l-1,2-2,1,1,1v2l-1,1,1,2,4-3v-2l1-1"/>
+      <path class="cls-1" d="M845.335,160.75l-1-2h-1l-2-2,1-1v-2h2l3-4-1-6-2-3v-2h-1v-7l2-2v-5l2-1v-2l1-1v-6h2l2-2h1"/>
+      <path class="cls-1" d="M911.335,224.75l-2,1h-8l-1-1h-3v-2h-2"/>
+      <path class="cls-1" d="M907.335,214.75h-3l-1-1v-2l2-2h2"/>
+      <path class="cls-1" d="M907.335,206.75v-2h-7l-1,1v2l1,1h4"/>
+      <path class="cls-1" d="M895.335,200.75l-1,4-2,1v4l1,1h2l4-2-1,2,2,2h2"/>
+      <path class="cls-1" d="M847.335,176.75l-1,1v-1l-1,2-2,1v-7h-1"/>
+      <path class="cls-1" d="M851.335,180.75h-1l-2,2v-1l-1,1v2l3,3h1l1,2,1-1h4l2-2v-2"/>
+      <path class="cls-1" d="M865.335,184.75v5l-1,1v-1l-5-2"/>
+      <path class="cls-1" d="M871.335,192.75l-4,2v2l2,2v2l1,1,4,1,2-1,3-4"/>
+      <path class="cls-1" d="M881.335,193.75h4l1-2,3-2,1-3,1-1v1"/>
+      <path class="cls-1" d="M839.335,164.75l1-8-6-1v-3h-1v-6l1-1v-2l3-1,2-3v-6l-1-1v-16l-1-1v-3h-1v-2l-1-1v-4l1-1v-15l3-5,1-7,2-3v-2l5-10,8-10v-1l2-2h1l2-2,2-4,2-1v-1l2-2v-2h3l1,2h3l1-1v-4l-2,1v-4l5-5"/>
+      <path class="cls-1" d="M836.335,168.75l-2,1v-1h-1l-1-4-2,2h-3"/>
+      <path class="cls-1" d="M839.335,175.75v2l4,3v2l1,1h2"/>
+      <path class="cls-1" d="M841.335,153.75v-7l-1-1v-3l-1-1"/>
+      <path class="cls-1" d="M844.335,123.75l-1-4,5-7v-1l14-14h1l2-3,6-3,3-3,4-2h2l2-2,4-2h2v4"/>
+      <path class="cls-1" d="M848.335,123.75h2l6-3,4-4,1-2v-5l-1-2,4-5"/>
+      <path class="cls-1" d="M896.335,224.75h-4v-5l1-1v-2l-2-2v-4h1"/>
+      <path class="cls-1" d="M905.335,237.75l3,2h7l1-1h3"/>
+      <path class="cls-1" d="M904.335,237.75h-4l-1,1v-2h-2l-1-1-2,1-1-8-2-3v-2l-1,1v-3h1"/>
+      <path class="cls-1" d="M891.335,205.75h-4v-4l-1-2h-2v-5"/>
+      <path class="cls-1" d="M852.335,190.75v2l7,6,4-2h3"/>
+      <path class="cls-1" d="M877.335,201.75h4l2-2v3l3,3v1l-1,1v-1"/>
+      <path class="cls-1" d="M838.335,160.75l-1-1h-2v-1l-2-2v-2h-1v-2"/>
+      <path class="cls-1" d="M833.335,143.75v-4l1-1,1-5,1-1h1l-1,1"/>
+      <path class="cls-1" d="M844.335,184.75l-1,1v-1l-2,3v5l-1,1v-1h-1v-3h1"/>
+      <path class="cls-1" d="M890.335,214.75l-1,1v-1l-5-2v-3l1-1"/>
+      <path class="cls-1" d="M898.335,239.75l-2,2v1l-2,1-1,2-2-4-3-1v-2l1-1,4-1"/>
+      <path class="cls-1" d="M892.335,231.75l-1-1h-2l-2-4v-1h2"/>
+      <path class="cls-1" d="M854.335,195.75l-1,4,3,3,1-2,1-1v1"/>
+      <path class="cls-1" d="M866.335,206.75v3l1,1h4l3-3v-3"/>
+      <path class="cls-1" d="M866.335,46.75l-2,4v4l-2,2v-1l-1,1v2l-1,1v-1l-1,2-2,1-1,2v3l-1,1v-1l-1,1v2l-1,1v-1"/>
+      <path class="cls-1" d="M828.335,159.75h-2l-1,1h-5l-2,2h-3l-2,2v-1l-3,3v-1l-1,1,2,2,6-3"/>
+      <path class="cls-1" d="M883.335,211.75l-4,2v7l3,2h1l2-2h3"/>
+      <path class="cls-1" d="M893.335,246.75l-1,1,1,2v4l1,2,2,1,1,8,1,1v12l1,1v4l-1,1v5l-1,2-2,1,1,1-1,2-2,1v5l-1,1v-1"/>
+      <path class="cls-1" d="M887.335,237.75l-1-2-4-1,1-11,2-2"/>
+      <path class="cls-1" d="M857.335,202.75h2v3l2,2,4,1"/>
+      <path class="cls-1" d="M866.335,210.75v11l1,1h4l1-1h2l1,1,3-2"/>
+      <path class="cls-1" d="M808.335,167.75l-4,2-2,2,1,2h2"/>
+      <path class="cls-1" d="M839.335,196.75v12l1,1v2l2,2h1v5l1,1h3l1,1h2l1-1v-6l1-1v-8h2"/>
+      <path class="cls-1" d="M891.335,247.75h-2v-1l-1,1h-3l-1,1v-4l2-2v1l2,2"/>
+      <path class="cls-1" d="M895.335,289.75l-1,1v-4l1-1v-14h-1v-6"/>
+      <path class="cls-1" d="M881.335,232.75l-6-1-1-3,1-1,1-5"/>
+      <path class="cls-1" d="M866.335,222.75l2,2v2l1,1h1l2-2v-3l1,1,1-1v1"/>
+      <path class="cls-1" d="M866.335,223.75l-1,1h-4l-1-1h-6l-1,1v-1l-3-2,1-1"/>
+      <path class="cls-1" d="M840.335,212.75v3l2,2v2l-1,1h-2l-2,2,2,2h1"/>
+      <path class="cls-1" d="M884.335,249.75l-1,1v-1l-2-2-2,1h-9v-1l-4-1v-2l3-3v-2h9l2-2v-1"/>
+      <path class="cls-1" d="M890.335,257.75l-1-1h-2v-1l-2-1-1-3h-2l-1,1h-4l-1,1h-4l-1,1-7-1-2-2v-2l1-2,2-1"/>
+      <path class="cls-1" d="M889.335,305.75l-2,2h-2l-1-2,1-2h1l4-4"/>
+      <path class="cls-1" d="M868.335,227.75l-1,1v4l-1,1v3l-1,1,1,2h2"/>
+      <path class="cls-1" d="M853.335,225.75l1,3,5,5,1,2v3l1,1h4"/>
+      <path class="cls-1" d="M846.335,83.75v3l-1,1v2l-1,1v4l-1,1v4l-1,1v12"/>
+      <path class="cls-1" d="M836.335,222.75l-1,1-4,1-2,2v-1l-2,4v-1h-3l-1,1v-1l-1,2-4,1-3,4-1-2v-4l1-1v-2h4l1,1h2"/>
+      <path class="cls-1" d="M848.335,224.75l-1,3,2,2h1l1,2h2l1-2"/>
+      <path class="cls-1" d="M861.335,251.75l-1-1h-3v-2l-1-1v-2l3-5v-2l1,1"/>
+      <path class="cls-1" d="M859.335,236.75l-1,1v2h-2l-4-7"/>
+      <path class="cls-1" d="M798.335,178.75l-2,2v-1l-2,3h-1l-1-1v-2h1l3-4h1l-1,1"/>
+      <path class="cls-1" d="M827.335,230.75v2l1,1h3l3,2,1,4,2,2v3l2,1v5l1,2-1,1v-1h-5l-1,1v-3l3-3v-2h1"/>
+      <path class="cls-1" d="M815.335,236.75v3l1,1,2-2h1l1-2,5-1,1-1v-2"/>
+      <path class="cls-1" d="M814.335,226.75h-5l-3,2v-1l-1,2-8,2v-6l-1-2h3"/>
+      <path class="cls-1" d="M847.335,228.75l-1,2v6l3,6,2,1,2,3h2"/>
+      <path class="cls-1" d="M791.335,181.75l-3,3v-1h-3v-2l-2-2-2,1v-2l-2-2-2-4-4-2v-3l-1-1v-2l-2-2v-4l-1-1"/>
+      <path class="cls-1" d="M839.335,254.75l1,11"/>
+      <path class="cls-1" d="M832.335,251.75l-2-1-1-3h-1l-1-3h-1v-6l-1-2"/>
+      <path class="cls-1" d="M816.335,241.75v1l3,4,2-1h4"/>
+      <path class="cls-1" d="M796.335,231.75l-2,1,5,7,3-3"/>
+      <path class="cls-1" d="M795.335,223.75h-3v-8l-1-1v-11l1-1v-3l-1-2h-2v-2l-2-4,1-6"/>
+      <path class="cls-1" d="M815.335,243.75h-1l-2,2v4l-1,1,1,2,1,1,5-5v-2"/>
+      <path class="cls-1" d="M793.335,232.75h-2v-9"/>
+      <path class="cls-1" d="M800.335,240.75l4,1,3,4h4"/>
+      <path class="cls-1" d="M788.335,198.75v-1l-4,2,1,2v4l-1,1v-1l-2,1v-5l1-1v1"/>
+      <path class="cls-1" d="M833.335,261.75v2l1,1v6l2,2h1l1-1,1-4"/>
+      <path class="cls-1" d="M810.335,250.75l-5,1v-2l2-3"/>
+      <path class="cls-1" d="M813.335,254.75l-1,1v5h-1l-2,2v-1h-2l-3-4v-6h-1l-2-2h-4v-2l1-1v-4"/>
+      <path class="cls-1" d="M809.335,263.75v4l1,2,4,3,2,6,2,1v1l2,2,1-1h3l4-3h2l2-2h1l-1,1v2l-1,2-2,1-1-3"/>
+      <path class="cls-1" d="M803.335,258.75v-1l-1,2-2,1-2,4,1,4,2,2,8-1"/>
+      <path class="cls-1" d="M803.335,254.75h-8l-1,1v-1l-1,1v-6l3-1"/>
+      <path class="cls-1" d="M788.335,233.75v-1l-1,1v7l4,5v2l1,1"/>
+      <path class="cls-1" d="M788.335,229.75l-4-4v-2h-1v-11l-1-1v-2l-2,1v-1"/>
+      <path class="cls-1" d="M815.335,277.75h-3v-1l-1,1v-2l-2,2v-1l-1,1,1,1h2"/>
+      <path class="cls-1" d="M819.335,282.75l-1,1h-9l-1,1v-6l-1-1-1,1v-1l-1,1h-4l-1,1v-3l-2-3,1-4"/>
+      <path class="cls-1" d="M828.335,283.75l-4,2-2,2v2h-2l-1,1v-1l-4-3h-4l-1,1v-1l-2,2v-1l-2-1v-3l1-1"/>
+      <path class="cls-1" d="M797.335,265.75l-2,1v-1l-1,1,1,1-1,2v-1h-1v-6l-2-1v-4l1-2"/>
+      <path class="cls-1" d="M786.335,233.75l-3-3-2,1v-1l-3,4-2,1v-1l-2,2v3l5,4,6-3h1l-1,1"/>
+      <path class="cls-1" d="M819.335,291.75v4l1,1v2l-1,1v-1h-1v-2h1"/>
+      <path class="cls-1" d="M809.335,289.75v2l1,1,4,1,1,1h3"/>
+      <path class="cls-1" d="M794.335,270.75v2h-4v-3l2-1-1,2"/>
+      <path class="cls-1" d="M780.335,229.75v-2l-1-1v-12l1-1"/>
+      <path class="cls-1" d="M773.335,238.75l-4,1-4,3-2,1v-1l-2,2v-1l-1,1,1,1v2l-1,1,2,2,3-1"/>
+      <path class="cls-1" d="M779.335,244.75v4l-2,3v3l-1,1-1,7,2,2,4,1,4,4h3l1,1"/>
+      <path class="cls-1" d="M819.335,300.75h-1l-2,2v-1l-1,1-2-1-3-3v-1h-1v-5"/>
+      <path class="cls-1" d="M822.335,300.75v1l2,2h9"/>
+      <path class="cls-1" d="M749.335,251.75l-1,2v4l-1,1v12l1,1v4l3,3,3-1,3-3,1-3,5-7v-4"/>
+      <path class="cls-1" d="M702.335,256.75l1,1,1,10,2,3h8l1-1h2l3,3h6l2-2h7l1,1h3l3,2v9l1,1h6l2-2v-2"/>
+      <path class="cls-1" d="M700.335,255.75h-10l-1,1v-1l-6,3v-1l-6-6-4-1v-2h-1v-9l-2-3v-4h-4"/>
+      <path class="cls-1" d="M755.335,278.75l1,1h5l1-1h3l4-6-1-4,2-2v-1"/>
+      <path class="cls-1" d="M705.335,270.75v2l3,4h5l1-1h3l2-2h1l-2,2"/>
+      <path class="cls-1" d="M727.335,273.75l2,3,4,1v1l3,4,2,1h4"/>
+      <path class="cls-1" d="M672.335,250.75l-1,1v-4l-3-2v-2l-2-1v-2l-2-2h-5l-1,1v-1l-1,1v10l2,2,2,4,2,2h1v1l3,3h3l1-1v-8"/>
+      <path class="cls-1" d="M656.335,240.75h-1v-28l1-1v-5l3-4,1-6,1-1v-2l-2-2h-2"/>
+      <path class="cls-1" d="M656.335,248.75l-5-4v-3l2-1h1l-1,1"/>
+      <path class="cls-1" d="M667.335,262.75l-1,1v-1l-1,2-1,1v-1l-4,4v-1"/>
+      <path class="cls-1" d="M679.335,266.75l2,3,1,4,2,2h1l1,3,1,1h5"/>
+      <path class="cls-1" d="M655.335,205.75v-6h-1v-1h-1l-1-2,1-4"/>
+      <path class="cls-1" d="M659.335,269.75l-2,2-2,5-2,1-2,4-2,1v-1l-1,1v4l-1,1v6l-1,1v5l3,3h3l2,1,6-6,2,2h8l2,1"/>
+      <path class="cls-1" d="M922.335,4.75h-4l-2,2v-1l-4,3h-4l-5,3v-1l-10,5-3,3v-1l-2,2h-2"/>
+      <path class="cls-1" d="M1066.335,43.75h3l1,1h2l2,2h2l2,2v1l-2,1,1-2"/>
+      <path class="cls-1" d="M1066.335,44.75l4,3h4l1,2h-1"/>
+      <path class="cls-1" d="M926.335,73.75l-1,1h-11l-8,4h-5l-1,1h-2l-4,2"/>
+      <path class="cls-1" d="M712.335,143.75l-2,1v-1l-1,1h-3l-2,2h-2l-4,4v-1l-2,2h-2l-4,3v-1l-2,3v-1l-4,4v-1l-1,1,1,2-1,1v3l-1,2h-6v-2l2-4,4-2"/>
+      <path class="cls-1" d="M1027.335,152.75h3l4,2h3"/>
+      <path class="cls-1" d="M964.335,230.75l-2,2v-1l-2,2h-1l-2,3v-1l-3,3v-1l-2,1"/>
+    </g>
+    <g>
+      <path class="cls-1" d="M135.335,52.75h2v1l6,7,1,3"/>
+      <path class="cls-1" d="M145.335,66.75h1v7l2,2v3l3,3v2l1,1v6l1,1v10l-1,1v3l1,1v6l-1,1v-1h-2l-1,1v-5l1-2h1"/>
+      <path class="cls-1" d="M30.335,106.75h3l1,1h3l1-1h5l2,2h2l1,1h14l4,4,3,1,3,4,2-3,7-1"/>
+      <path class="cls-1" d="M67.335,114.75l-1,2,1,2h4l1,1,1-1,2,4,4,4h2l4,5,1-1h2l3-3,4-2h8"/>
+      <path class="cls-1" d="M77.335,125.75l1,1,1,4,2,2h2l1-1v2l4,3,3-2-1-5"/>
+      <path class="cls-1" d="M63.335,118.75l-4,3v-1l-1,2-2,1v1l1,1,1-1,1,2,2-2,4-1,1-1h2l1-2h1"/>
+      <path class="cls-1" d="M84.335,134.75l-1,1v3l2,3h2l1-1v-3"/>
+      <path class="cls-1" d="M91.335,135.75l1-1h2l1,1h10l1,1h3l2-2h1l1-2,4-1,1-2,1,1,1-1h2v1l2,2h2v1l3,2,4-2h2l1-1h6l2,2h3l1-2,2-1v-10h-3l-2,2"/>
+      <path class="cls-1" d="M86.335,142.75l1,6,1,1,1-1h2l1-1v-3h-1v-1l-2-2h-1"/>
+      <path class="cls-1" d="M106.335,137.75l1,1,1-1v3l-1,2-2,1v1h-1l-2,2v-1"/>
+      <path class="cls-1" d="M117.335,128.75v-2l-3-4v-4l-2-2v-1h-2l-1-1h-3l-1,1v-1"/>
+      <path class="cls-1" d="M146.335,135.75v2l-3,2-1,6-1,1v-1"/>
+      <path class="cls-1" d="M150.335,132.75l4,4h2l4,2"/>
+      <path class="cls-1" d="M151.335,129.75h6l3,2h2l2-2h5l3,2h2"/>
+      <path class="cls-1" d="M87.335,150.75v1l-6,3v-6l-2,1,1-4"/>
+      <path class="cls-1" d="M92.335,148.75l1-1h9l1,1h3l2-2,5-2,2-4h1v2h-1"/>
+      <path class="cls-1" d="M113.335,121.75l-4-2-1-2h-2v-1h-1"/>
+      <path class="cls-1" d="M131.335,137.75l2,1,1,2h2l2-3h4v3h-5l-1,1v4l-1,1v2"/>
+      <path class="cls-1" d="M81.335,155.75l-3,2-1-2v-3l1-2h2"/>
+      <path class="cls-1" d="M94.335,148.75v3l-2,3v3l4,2,2-1,3-4v-4l1-2"/>
+      <path class="cls-1" d="M114.335,144.75l3,3,3-2v-5l2-1,1,1"/>
+      <path class="cls-1" d="M137.335,152.75v1h-1l-2,2v3l2,1v7l1,1h5l4,3v5l2,1v2l2,4,4,5h1l2,2h3l2-2v-2"/>
+      <path class="cls-1" d="M46.335,135.75l-1,6-1,2-1,1v-1"/>
+      <path class="cls-1" d="M92.335,158.75h-3l-1,1v3l1,1h6l2-4"/>
+      <path class="cls-1" d="M100.335,156.75h3l4-5h6l2,2h1l2-2v-4l1,1,1-2"/>
+      <path class="cls-1" d="M131.335,140.75l-1,8-2,1v2l2,2v2l-1,1v4l1,1,2-2h2"/>
+      <path class="cls-1" d="M135.335,166.75h-3l-1,1v-1l-1,1,1,2h-2v-8h-1l-2-2v-6l1-1h1l-1,1"/>
+      <path class="cls-1" d="M139.335,168.75v4l1,1v11l-4,1-1,1v-1"/>
+      <path class="cls-1" d="M153.335,187.75l-1,2v3h-4v-6l1-1"/>
+      <path class="cls-1" d="M158.335,190.75l-1,2v3l-2,3v2l1,1,2-2h2l2,2v1l2,1,1,4,1,1v6l-3,4v-1l-1,1h-8l-4-2v-2h-1v-5l1-1-1-6,6-1"/>
+      <path class="cls-1" d="M162.335,188.75h1l3-4v-3l1-1v-5l1-1-1-2v-3"/>
+      <path class="cls-1" d="M96.335,163.75v9l3,2,4-4v-6h12l1,1,1-1v-9l-1-1,4-4v-2l1,1h6"/>
+      <path class="cls-1" d="M125.335,158.75l-2,1v-1l-2,2v-1l-1,2-2,1"/>
+      <path class="cls-1" d="M147.335,192.75l-2,1v4l3,4"/>
+      <path class="cls-1" d="M149.335,217.75v-1h-1v-3l-4-1-2-2v-4l2-1h4"/>
+      <path class="cls-1" d="M46.335,149.75v2l-1,1v11l1,1v7l1,1v5l1,1h1l2,2h3l1,1h9l5-4v-5l2-4,1-1v1"/>
+      <path class="cls-1" d="M84.335,164.75l1,1h2l1,4,5,5,3-1"/>
+      <path class="cls-1" d="M100.335,175.75v3l1,1,2-1h5l3-2h3l2-3v-7"/>
+      <path class="cls-1" d="M133.335,192.75v3l1,1,4,2h7"/>
+      <path class="cls-1" d="M132.335,189.75v-1l-1,1h-3l-1,1h-7l-2-2h-1l-1-2v-3l3-3v-1h2l2-2v-4h1"/>
+      <path class="cls-1" d="M141.335,211.75v-1l-1,1v2l-1,1v-1l-4,3v-1l-1,1v2l-1,1v-1"/>
+      <path class="cls-1" d="M45.335,169.75l-4-2v-10l1-1"/>
+      <path class="cls-1" d="M46.335,177.75h-9v-1h-4l-1-1-2,1v-2l-2-1-1,1v-2l-2-1h-2l-1,1v-3l-2-1-5-5h-2l-1-3-5-6-1-3h-1l-2-5-2-2v-2"/>
+      <path class="cls-1" d="M65.335,181.75l2,3v2l2,1,1,3,1,1h3l1-1,1-8,3-1,4-4,2,1,3-3h3l1-1-1,5-2,1,1,1h5l3,3h2l1-1v-3l-1-1"/>
+      <path class="cls-1" d="M109.335,178.75l1,2h4l1-1v-3"/>
+      <path class="cls-1" d="M131.335,187.75l-3-3-1-3h-1v-1h-1l-1-2-2,1"/>
+      <path class="cls-1" d="M134.335,214.75l-2-1v-6l2-1v-3l-3-3v-2h1"/>
+      <path class="cls-1" d="M133.335,220.75l-1,1v-1l-1,1h-2l-2,2h-3l-1,1v-3l1-1v-3l-1-1v-6l2-1,2-4v-3l1-2h2"/>
+      <path class="cls-1" d="M21.335,173.75v-1h-3l-1-2h-1v-1l-2-1-1-3-2-1-5-5h-1l-1-2-2-1v-2l-2-1"/>
+      <path class="cls-1" d="M52.335,182.75v1h-6l-1,1h-4l-1-1"/>
+      <path class="cls-1" d="M75.335,191.75l3,6h6l2,2,2-2h6l1-1v-9l2-2h1l-2,2"/>
+      <path class="cls-1" d="M75.335,181.75l-1-2,1-1v-2h1l4-3,2,1v2"/>
+      <path class="cls-1" d="M101.335,184.75h3l1,2,1-1h2l1-2"/>
+      <path class="cls-1" d="M122.335,225.75v-1l-4,2h-4l-2,2-1-1h-3l-1,1-1-1h-7v-1h-3l-1-1-2,1v-1h-1v-2l-3-1v-1l-1,1v3l1,1h2l1,1-1,1v-1"/>
+      <path class="cls-1" d="M122.335,212.75h-7l-1,1v-2l-2-4h-1v-3l-2-3v-8l2-1v-2l-3-2h-3l1-2"/>
+      <path class="cls-1" d="M127.335,199.75l-2-2h-3l-4-3h-2v-1l-4-1"/>
+      <path class="cls-1" d="M77.335,197.75l1,1v3l1,1h3l3-3v1l-2,2,1,4,1,1h4l1,1,2-1v-6h2l2-2v-2h-1"/>
+      <path class="cls-1" d="M96.335,194.75l1-1h6l1-1v-4"/>
+      <path class="cls-1" d="M88.335,220.75h-2l-1,1v-2l-1,1-1-2,7-6,2-4"/>
+      <path class="cls-1" d="M110.335,207.75l-4-1-2-4-1-1h-2v-2l2-3v-2l3-2v-1h-1"/>
+      <path class="cls-1" d="M63.335,194.75l-1,2,3,3h1l1,2,2-1h3l-1,1,1,2,1-1h4"/>
+      <path class="cls-1" d="M93.335,206.75h2l3-3v-3h2"/>
+      <path class="cls-1" d="M69.335,201.75l2,2-2,1-1,6-1,1v-1l-2,3v-1"/>
+      <path class="cls-1" d="M97.335,205.75l2-1,2,2v1l7,7h2"/>
+      <path class="cls-1" d="M79.335,220.75l-6,3h-5v-6l1-1"/>
+      <path class="cls-1" d="M61.335,201.75v-1l-1,1v3l-1,1v8l2,4v3l1,1,2-2,1-2v-3"/>
+      <path class="cls-1" d="M67.335,224.75v9l1,1v5l1,1v2"/>
+      <path class="cls-1" d="M59.335,216.75l-2,1v5l2,1,2-2-1,2"/>
+      <path class="cls-1" d="M57.335,223.75l-1,4,2,2h5"/>
+      <path class="cls-1" d="M56.335,223.75h-4v-1h-9l-3-2h-3v-1l-8-4"/>
+      <path class="cls-1" d="M55.335,227.75l2,2,1,10"/>
+      <path class="cls-1" d="M60.335,230.75v3l1,1,1,5,4,5v1l2,1,1,2"/>
+      <path class="cls-1" d="M189.335,135.75h1l7,6h1l2,4h6l2,1,5,5h1"/>
+      <path class="cls-1" d="M203.335,146.75l1,1,1-1v2l2,3h2l1-2"/>
+      <path class="cls-1" d="M208.335,152.75l2,1,11,12,3-1,2,2,1,3,2,2v2l3,3v2l2,3v2l3,3v2l4,8v4l2,3v4l1,1v3l1,1v5l1,1v7l1,1v5l1,1v2l-1,1,1,6-1,1v4l-1,1v2l-1,1v-1"/>
+      <path class="cls-1" d="M220.335,165.75l2,2,4,7,1,1,2-1"/>
+      <path class="cls-1" d="M245.335,251.75v4l-1,1-1,7-1,1-1,5-1,1v-1"/>
+      <path class="cls-1" d="M234.335,188.75l1,8,2,3v3l2,4v4l1,1v4l1,1v5l1,1v19l-1,1v-1"/>
+      <path class="cls-1" d="M241.335,243.75l-1,8-1,1v2l-2,1v7l-2,3v3l-3,5,4,3,1-2h1"/>
+      <path class="cls-1" d="M236.335,277.75l-2,2-2,1v-1h-1l-1,1,1-4"/>
+      <path class="cls-1" d="M230.335,283.75v2l-2,1,1,1-2,2v-1l-1,1,1,1-1,2-2,1v1l-2,1-2-4,1-2,4-3v-1h1l2-2h1l-2,2"/>
+      <path class="cls-1" d="M222.335,296.75l-2,1v-1l-1,1-1,4-1,1v-1l-1,2-1,1v-1l-4,5v-1l-2,2v-1l-1,2-4,3v1"/>
+      <path class="cls-1" d="M214.335,298.75l-4,5v-1l-2,2v-1l-2,2v-1l-4,3v-1l-3,2h-3l-1,1v7l-2,1h-4l-1-1v-3l1-2,2-2h3"/>
+      <path class="cls-1" d="M177.335,137.75l5,1,6,5,8,4h2"/>
+      <path class="cls-1" d="M59.335,241.75v3l3,5v4l1,1v2l2,3,1,4,1,1h2l1-1v-3h-1v-2l-2-4v-3"/>
+      <path class="cls-1" d="M71.335,263.75h1l3,6,6,6h2l2,4,2,1h3l1,1"/>
+      <path class="cls-1" d="M86.335,280.75v3l7,5"/>
+      <path class="cls-1" d="M78.335,280.75l1,1h4l-1,2,1,1h3"/>
+    </g>
+  </g>
+  <g id="works">
+    <g>
+      <path class="cls-1" d="M645.335,282.25h-1l-2-2v-1h-1v-1h-3l-4-4h-1l1-4,4-2,1-1v-2l-1-1v-4h-4v-10h-1l-1-3"/>
+      <path class="cls-1" d="M646.335,302.25l-1,1h-7l-1,1v-2l-5-2-1-2h-3l-3-3h-1v-5l5-5v-6l1-1v-2l2-2-1,2"/>
+      <path class="cls-1" d="M632.335,272.25h-9l-4,2v2l3,3h6"/>
+      <path class="cls-1" d="M633.335,270.25l-2-2v-5l1-2,1-1v1"/>
+      <path class="cls-1" d="M623.335,291.25h-2v-12"/>
+      <path class="cls-1" d="M618.335,275.25v1l-2,1v3l-2,2v1l-1,1v-1l-4,5v-1h-1l-2-2v-1h-2l-1-8-2-4,1-4-2-4v-5l-1-2,1-1,6-1,5-5v-1l3-4v-15l4-8v-12l1-1v-6l-2-4v-3h-1l-4-8h-2l-1-2-1,1h-3l-1-1-2,1"/>
+      <path class="cls-1" d="M620.335,299.25v9l-1,2-2,1,3,3h13l2,2-1,1v-1l-1,2-2,1v1h-5v-5"/>
+      <path class="cls-1" d="M620.335,291.25h-9l-1,1v-1l-1,1-1,9-1,1v-1l-1,2-1,1v-1l-4,5v-1l-1,1v-1l-2-2h-2l-1,1v-1l-1,2-1,1v-1l-4,5v-1l-4,3h-3l-2,2h-2l-1,1v-1l-1,1,2,2v1l4,4h3l1-2,13-13h1l-11,11"/>
+      <path class="cls-1" d="M617.335,274.25h-3l-1-1h-5l-2-2-3-1"/>
+      <path class="cls-1" d="M603.335,284.25h-3l-1,1h-3l-1,1v-1l-2,3v-1l-2-1-5-5v-1l3-3,1-4,2-2v-11l3-2v-2l-2-3v-6l-2-3v-3l4-5v-5l4-2v-10l1-1v-2l1,1,2-3v-7"/>
+      <path class="cls-1" d="M613.335,234.25l-2,1v-2l-1-1v-8h4l1-1v-2l2-1"/>
+      <path class="cls-1" d="M594.335,304.25l-1-1v-3l1-1v-3l-1-1v-6"/>
+      <path class="cls-1" d="M575.335,317.25h-5l-1-1-7-1v-1l-1,2-1,1v-1"/>
+      <path class="cls-1" d="M585.335,281.25l-1,1v-2l-5-4h-4l-1-1h-2v-2l2-3v-5l1-1v-3l2-1,4-4,2-7,1-1h2l4-4v1l-2,2"/>
+      <path class="cls-1" d="M590.335,271.25l-3-3v-5l-3-3v-1h-1v-1l-2-1"/>
+      <path class="cls-1" d="M590.335,241.25l-2-2h-5l-1,1v-2l-2-4-2-2h-1l-2-2v-1l3-3h1l3-3v-1l2,1,2-2v-1h3l2-1,2-3h6"/>
+      <path class="cls-1" d="M594.335,238.25l1-1,3,3,2-1,4,1,1-2h2l3-3"/>
+      <path class="cls-1" d="M594.335,230.25l-2-2h-3l-2-1-2-2v-2l1-1"/>
+      <path class="cls-1" d="M599.335,231.25l1,1,9-1"/>
+      <path class="cls-1" d="M600.335,226.25l2-2,4-2-1-4-3-1"/>
+      <path class="cls-1" d="M602.335,210.25h-1v-2l-2-4h-1v-1l-3-3v-3h1l4,2v1l2,2"/>
+      <path class="cls-1" d="M602.335,312.25l-1,1v-1l-1,2-1,1v-1l-1,2-1,1v-1l-4,5v-1"/>
+      <path class="cls-1" d="M600.335,324.25v7l-1,1v3l-3,6v4l-1,1v2l-1,2-1,1v-1"/>
+      <path class="cls-1" d="M574.335,260.25h-1l-2-4,6-5,1-2v-4l1-1v-4h2"/>
+      <path class="cls-1" d="M574.335,230.25l-2-1v-5l-1-1-1-5h-1v-1h-1v-1h-1l-5-5-2-4h-3l-1-1-2,1v-3l2-2,2-4,2-1v-2"/>
+      <path class="cls-1" d="M581.335,221.25l-1-1v-2l-4-2-1-6h-2l-2-2,1-3h-1v-1l-2,1v-2h-1v-1l-2-1-1-2-4-2-1,1"/>
+      <path class="cls-1" d="M592.335,322.25v5l1,1h5l1-1"/>
+      <path class="cls-1" d="M593.335,352.25l-1,1v-1l-3,3v-1l-2,3v-1l-6,5v-1"/>
+      <path class="cls-1" d="M577.335,245.25h-3v-5l1,1h3"/>
+      <path class="cls-1" d="M571.335,230.25h-4l-2,2v-1l-3-3-2-1h-2l-1,1v-3h-1l-1-4-1-1v-3h-1v-6l1-1v-2"/>
+      <path class="cls-1" d="M553.335,203.25h-3l-2-3h-1l-4-3h-3l-1-2-8-1"/>
+      <path class="cls-1" d="M592.335,329.25v3l-3,3-3,6-1,1v-1"/>
+      <path class="cls-1" d="M533.335,335.25l-1,1h-4l-1,1v-1l-1,1,4,5v4l4,7v4l-1,1"/>
+      <path class="cls-1" d="M580.335,362.25l-1,1v-1l-4,5v-1"/>
+      <path class="cls-1" d="M584.335,343.25l-1,1v-1l-1,2-1,1v-1l-1,2h-1l-2,2v1h-3l-1,1v-1"/>
+      <path class="cls-1" d="M556.335,230.25l-2,2v-1l-1,1v3l3,3"/>
+      <path class="cls-1" d="M552.335,233.25l-2,1v-3l-1-2h-3l-2,3,2,2h3"/>
+      <path class="cls-1" d="M570.335,356.25v7l-1,2-1,1v-1l-2,3h-2l-2,2v-1l-2,3v2l-1,1v-1l-2,3v-1l-2,2h-2l-1,1v-6"/>
+      <path class="cls-1" d="M470.335,276.25l-1-1h-2l-1-3-7-5v-16l4-2,1-2v-3l1-1v-2l2-4-2-3-1-4-2-1-1-2h-2v-2l-2-2-1-4h-1l-6-6v-4l4-2v-3l1-2,4-4,4-1,1-2h1l2-2v-1h8l1-1h3l2-4,5-3v-2l1-1,2,1h4l3,2h2l4,2h3l3,3v3l-2,1v-1l-2,2h-6l-6-3-2-4-4-2"/>
+      <path class="cls-1" d="M477.335,257.25h-1l-2-2v-1l3-4v-8h1l2-2,1-4h1l1-2h1l5-4h5"/>
+      <path class="cls-1" d="M491.335,244.25l1,1v5l-1,1v3l-2,1v-1"/>
+      <path class="cls-1" d="M551.335,379.25l-2,1v-1h-6l-2-2"/>
+      <path class="cls-1" d="M458.335,268.25h-8l-1,1h-3l-1,1h-4l-1-1v-4l2-2v-9l1-1v-4l-4-4v-1l2-2v-18h3l1-1v-4l1-1v-3l2-2-1,2"/>
+      <path class="cls-1" d="M458.335,250.25l-1-1h-9l-5-5v-2l8-8v-3l1-2,1-1h4l1-1"/>
+      <path class="cls-1" d="M463.335,250.25l3,2h5l2,2"/>
+      <path class="cls-1" d="M448.335,210.25h-1v-1l-3-3v-6l-2-2"/>
+      <path class="cls-1" d="M479.335,191.25l11,1"/>
+      <path class="cls-1" d="M549.335,381.25l-2,4-2,2-2,1v-1l-2,2"/>
+      <path class="cls-1" d="M439.335,265.25l-2-2h-7l-3-3v-1l2-2v-8l3-3h5l1-1v1"/>
+      <path class="cls-1" d="M438.335,243.25l-8-8-1-4-3-1v-5l4-4,5-1,3-4h1l4-4,3-1"/>
+      <path class="cls-1" d="M434.335,275.25l-4,1-1,1h-2l-1,1v-1l-1,1,1,2h-2v-2h-2v-2l1-1v-10l-2-2v-1h1l2-2v-1l2,1"/>
+      <path class="cls-1" d="M431.335,245.25l-3-3-4-1-2-1v-1h-1v-3l2-2,1-3,1-1v1"/>
+      <path class="cls-1" d="M425.335,225.25h-2v-3h-1l-1,1,1,2-2,1v-3"/>
+      <path class="cls-1" d="M421.335,278.25l-3,2v-1l-1,1h-2l-1,1v-1l-1,1,1,1v3l-1,1v4l-1,1v3l-1,1-1,13-2,1v13l1,1,5-1v2h-2v-1"/>
+      <path class="cls-1" d="M420.335,264.25v-2l-5-5h-2l-2-2v-1l3-4-1-4-2-3v-3l2-1v-5l1-1v-3l1-2,4-2"/>
+      <path class="cls-1" d="M423.335,258.25l-5-5v-1l-4-1"/>
+      <path class="cls-1" d="M413.335,279.25l-1-1v-4h-1v-3l8-7v1l-2,2"/>
+      <path class="cls-1" d="M412.335,281.25l-8,1-3,2-2-5-2-2v-1h6l2-2h5"/>
+      <path class="cls-1" d="M410.335,295.25l-3-2h-7v-2l1-1v-5"/>
+      <path class="cls-1" d="M407.335,309.25l-1-1h-5l-1,1v-2l-1-1v-14l-1-1h-2l-2-2h-1l-1-2h-1v-5l1-2,4-4v-2h-1v-3l1,1,1-1h3l5-3v-7l-1-1v-3l3-1,1-2,2,1"/>
+      <path class="cls-1" d="M408.335,323.25v2l3,3,5-1v2l-2,1v-2"/>
+      <path class="cls-1" d="M410.335,241.25l-1-1h-3l-4-4v-1l4-4h4l1-1h2"/>
+      <path class="cls-1" d="M399.335,309.25l-4,1-2,2h-2l-8,4h-13"/>
+      <path class="cls-1" d="M390.335,286.25h-7l-5-4-1,1v-1h-1v-2l-2-2v-2l1-1v-2l3-4v-11l1-1v-2h1l2-2v-1l3-3v-1l5-5v-2l2-2h1l3-4,1,1h4"/>
+      <path class="cls-1" d="M394.335,270.25l-1-2-1,2h-12l-1-1"/>
+      <path class="cls-1" d="M403.335,257.25l-1-1v-4h4l1,1"/>
+      <path class="cls-1" d="M408.335,326.25l-4,1-1,1v-1h-1v-2l-2,1v-1"/>
+      <path class="cls-1" d="M415.335,331.25l2,4v2l1,1v5l2,2,1-1h8l4,2v1l2,1,7,7v1l2,2h1l2,6,3,3h1l1,6,2,1,1,2h1v1l3,3v2l1,1h6l3,2h2l4,2,3-3,2,1h5l1,1h5l1,1"/>
+      <path class="cls-1" d="M373.335,278.25l-1,1h-3l-4,2v-1l-2,2-9,1-4,2v-1h-1v-3l1-1,1-6,1-1v-3l2-4h1l10-9h2l4-3h1l1-2,1,1h3l1,1"/>
+      <path class="cls-1" d="M386.335,248.25l4-4h1l7,8,3,1"/>
+      <path class="cls-1" d="M389.335,240.25l-5-5v-7l1-2,4-2,4-4v-8l-1-2h-1v-7l-1-1v-13l-5-11-2-1"/>
+      <path class="cls-1" d="M395.335,234.25v-3l-1-1v-8l-1-1-3,3"/>
+      <path class="cls-1" d="M392.335,267.25v-7l2-2v-9"/>
+      <path class="cls-1" d="M403.335,329.25l2,2,3,6,4,4,5,2"/>
+      <path class="cls-1" d="M421.335,345.25v3l6,6,2-2h1l3-4v1"/>
+      <path class="cls-1" d="M442.335,357.25v1h-1l-2,2v-1l-1,1h-3l-1,1v-2h-2l-1,1v-2l-2-1-1-2,1-2"/>
+      <path class="cls-1" d="M447.335,365.25h-3l-1,1v-1l-1,1h-4l-2-1v-1l-2-2-1,1v-1l-2,4,1,2,4,3,2,4h9l1,1h1l2-2h1l-1,1"/>
+      <path class="cls-1" d="M460.335,384.25v3l2,4v4l2,4,1,10-1,1v7l-2-1h-4l-2,1"/>
+      <path class="cls-1" d="M481.335,386.25v2l2,2h5l4,2h4l1-1v-2"/>
+      <path class="cls-1" d="M350.335,286.25v6l1,1v5l1,1v3l2,2v1l2,2h1l1,2v4"/>
+      <path class="cls-1" d="M349.335,286.25h-4l-1,1h-16l-1-1-6-1v-1h-2l-1-1h-3l-2-1-1-2-7-4-1-2h-3l-6-3-2-4h-2l-1-1v-3l-2-3-1-4-2-2-6-1v-2l-3-5v-3l-2-3v-2l-1-1v-2l-2-3v-3l-1-1,1-2v-8h-1v-6l-1-1,1-1v-4l1-1,1-6,1-1v-6l2-2,2-4v-4"/>
+      <path class="cls-1" d="M372.335,251.25l-2-2v-7l5-6,8-2"/>
+      <path class="cls-1" d="M381.335,257.25l4,4h6"/>
+      <path class="cls-1" d="M390.335,210.25h-4l-3-2h-2v-15l-1-1v-7l-1-1v-2l-2-1h-2l-1,1v-2l-2,1v-2h-1v-3l-1-1v-5l-4-2"/>
+      <path class="cls-1" d="M403.335,330.25l-1,1v-1l-1,2h-19l-1,1h-3l-3,3v-1l-2,1"/>
+      <path class="cls-1" d="M427.335,355.25l-1,1v-1l-1,2-2,1v-1h-2l-2-4v-2"/>
+      <path class="cls-1" d="M430.335,361.25v-1l-3,3v-1l-1,1,4,2"/>
+      <path class="cls-1" d="M497.335,392.25l1-1h6l1,1h12l1-1h2"/>
+    </g>
+  </g>
+  <g id="shop">
+    <g>
+      <path class="cls-1" d="M798.835,282.75l-4-1-1-1h-2l-1,1v-1l-3,3-1-2v-4l-2-3v-2h-1v-2"/>
+      <path class="cls-1" d="M757.835,248.75l-2-2v-1h-3l-4,3v-1l-1,1,1,1v2l4,4,6,1,2,1,2,3h7l2,2h1"/>
+      <path class="cls-1" d="M787.835,284.75v5l-1,1v-1h-1l-3-3v-2l-1-1,1-1v-3l1-1"/>
+      <path class="cls-1" d="M746.835,248.75l-1-1h-4v-1l-2,2h-6l-1,1h-13l-1,1h-9l-1,1v-1l-3,2h-2l-1,1v-1l-1,2-2,1,1-6,3-4,4-1,1-1h2l5-3h3l6-3h5l4-2h4l1,1v5l2,4"/>
+      <path class="cls-1" d="M786.835,291.75l1,3,6,6,2-1"/>
+      <path class="cls-1" d="M793.835,301.75l-1,3-2,2v-1l-1,1v5l1,1v18l-1,1v5l-2,3v3l-1,1v-1"/>
+      <path class="cls-1" d="M702.835,272.75v1l-1,1v-1l-1,2h-1l-2,2v-1l-1,2-2,1,1,4,1,1h4l4-4v-3l1-1"/>
+      <path class="cls-1" d="M735.835,283.75v2l-1,1v-1l-1,2h-19l-1,1v2h-4l-2-1-1-2v-2l2-1h2l3,2"/>
+      <path class="cls-1" d="M749.835,284.75l2,3v3l2,2,3-1,1,1h3l3,2h3"/>
+      <path class="cls-1" d="M679.835,261.75v1l-1,1v-1l-1,2-1,1v-1l-2,2v-2l-3-3h-2"/>
+      <path class="cls-1" d="M693.835,280.75h-2v-7l2,1v1h-1"/>
+      <path class="cls-1" d="M753.835,293.75l1,1v6l1,1v3l1,1v17l-1,1-1,8-1,2-1,1v-1"/>
+      <path class="cls-1" d="M673.835,267.75v-1l-4,5v-1l-3,3-2,1v-1l-1,1v2l-1,1v-1"/>
+      <path class="cls-1" d="M670.835,300.75l3-3v-2l2-4,7-7v-2l2-2h1l-2,2"/>
+      <path class="cls-1" d="M751.835,335.75v2l-6,6v1l-1,1v-1"/>
+      <path class="cls-1" d="M661.835,278.75l-2,3v3l-1,1v4l-1,1v6"/>
+      <path class="cls-1" d="M663.835,328.75v-14l3-3,1-6,2-4"/>
+      <path class="cls-1" d="M651.835,304.75v1l-2,1-1,4-1,1,1,9,3,3h2l4,5h4l1,1,1-1"/>
+      <path class="cls-1" d="M693.835,294.75l-1,4-1,1v-1l-3,2h-1v-1l-3,2-2-1,2-3h1l2-2,5-1"/>
+      <path class="cls-1" d="M743.835,346.75l-1,1v-1l-1,2-1,1v-1l-1,2-1,1v-1l-2,2v-1l-2-2h-3l-1,1v-1l-3,3h-3l-1,1v-1l-2,2v-1l-4,3v-1"/>
+      <path class="cls-1" d="M637.835,305.75l-1,1v8l1,1h9"/>
+      <path class="cls-1" d="M656.835,328.75v1l-6,3v-1l-1,1,2,2v7l2,4v4l2,2v5l-1,1v-1h-1v-2h1"/>
+      <path class="cls-1" d="M663.835,329.75l5,10v2l2,2v1l2,2h5l2,1,7,7h3l2,2v2l1,1h2l1,1h4l2-1,3-3v-1l2-1"/>
+      <path class="cls-1" d="M736.835,353.75l-2,4h-2l-3,2v-1l-1,1h-2l-4,2h-9v-2l3-2"/>
+      <path class="cls-1" d="M636.835,315.75l1,3,2,2v4l2,3v3l2,2h5"/>
+      <path class="cls-1" d="M653.835,350.75v1h-4l-1,1-3-6v-2h-1v-2l-1-1v-8h-1v-1l-2,2h-6l-1,1h-4l-1,1-2-2h-2l-1-1-4-1v-1h-1l-3-3v-1h-1l-1-3-6-6h-1v-2l4-4,6-1"/>
+      <path class="cls-1" d="M654.835,358.75l2,3h1l1-2h2v2l-2,1v-1"/>
+      <path class="cls-1" d="M673.835,347.75v2l3,4v1l4,3,2,1h3l1-1v-2l-1-1"/>
+      <path class="cls-1" d="M658.835,363.75l2,1v2l3,3,1,5,9,9h1l5,4,4,2h2l3,2h3l1,1h9l1,1h10l2-1,1,1,4,1"/>
+      <path class="cls-1" d="M778.835,361.75l-3,4v1l-1,1v-1l-1,2-1,1v-1l-1,2-2,1-1,3-1,1v-1l-1,2-2,1v-1h-2l-4,2v-1l-1,1h-2l-4,2-2,2v2l1,1h4l8-4,2-2v-1"/>
+      <path class="cls-1" d="M592.835,300.75l-1-1h-3l-1-1h-9v-7l2-3v-3l3-3v1l-2,2"/>
+      <path class="cls-1" d="M561.835,313.75l-1-1v-6l3-3,2-8,1-1h11"/>
+      <path class="cls-1" d="M559.835,318.75l-2,5-3,3v-1l-1,2h-3l-3,2v-4l-1-2"/>
+      <path class="cls-1" d="M571.835,275.75l-1,1h-4l-3,2v-2l-1-1v-4l-2-2v-1h6l5,5"/>
+      <path class="cls-1" d="M559.835,306.75h-3l-1-1v-4l-1-1,1-1v-8l3-3v-4l4-4v-1"/>
+      <path class="cls-1" d="M546.835,329.75l-12,6v-2l-1-1-2,1"/>
+      <path class="cls-1" d="M559.835,267.75v-2l3-3,3-6,1,1h4"/>
+      <path class="cls-1" d="M557.835,283.75l-4-1-1-1v-4l1-1v-6l4-4h1l-4,4"/>
+      <path class="cls-1" d="M564.835,255.75v-14l1-1v-1h-1v-4l1-2"/>
+      <path class="cls-1" d="M551.835,277.75l-1-1-4-1v-1h-1v-2l-2,1-1-2v-5l2-1h8l1-1h2l1,1"/>
+      <path class="cls-1" d="M525.835,337.75h-10l-1-2h-5l-1-1h-3v-1h-3l-3-2h-2l-4-3h-1v-1l-3-1v-1h-1v-1h-1v-1l-2-1-1-3-4-3v-2l-3-4v-5h-1v-2l-1-1v-5l-1-1v-9l4-2,4-5v-1"/>
+      <path class="cls-1" d="M563.835,241.75v-2h-5l-1,1v-1l-1,2-2,1v1h-2l-1,2-1,1v-1"/>
+      <path class="cls-1" d="M541.835,272.75v-1l-1,2h-1l-4,5v-1"/>
+      <path class="cls-1" d="M541.835,266.75v-6l-1-1v-8h7l2-2v-2"/>
+      <path class="cls-1" d="M552.835,263.75l-1-1v-3l-3-5v-3"/>
+      <path class="cls-1" d="M473.835,287.75l-1-2v-6l-1-1v-2h1l7-8v-2l-1-1v-8l3-3h1l6-7v-4l1,1,4-1,2-1,4-4h1l4-4v-1l1,1h3l1-1v-1l2-2v-5l1-1,1-11"/>
+      <path class="cls-1" d="M535.835,279.75v4l-2,2v-1l-1,1h-10l-1-2h-2l-1,1v-1l-2,3v-1h-3l-2-4h5l1,1"/>
+      <path class="cls-1" d="M540.835,264.75h-2l-4-2v-7l4-4v-1l1,1-2,2"/>
+      <path class="cls-1" d="M480.835,268.75l1,1h14l2-2v-1l4-3,1-2v-4l2-3v-2l4-4,4-1,2-2v-3h2l2-2v-6l1-1v-3l1-1,2-1h12l1,1h2l4,3h2"/>
+      <path class="cls-1" d="M510.835,281.75v-1h-1l-1-2h-2l-2-8h3l5-5,2-4v-4l1-1v-8l-1-1"/>
+      <path class="cls-1" d="M537.835,249.75l-1-3-4-1v-2l-2,1v-1h-13l1-2"/>
+      <path class="cls-1" d="M496.835,269.75l1,1h4l1-1-1-2v-3"/>
+      <path class="cls-1" d="M519.835,235.75h4l3-3v-2l1-1v1"/>
+    </g>
+  </g>
+</svg>
+</main>
+
+<section class="footer-panel" id="footerPanel">
+  <img class="footer-about-image" src="info1.webp" alt="Sangsoo1ee">
+  <div class="footer-bio">
+    <span class="name" data-i18n="bioName">WONGYEONG LEE —</span>
+    <span data-i18n="bioLine1">Maker &amp; Visual Practitioner based in Seoul.</span><br>
+    <span data-i18n="bioLine2">Working across visuals, tattoos, objects,</span><br>
+    <span data-i18n="bioLine3">and handcrafted pieces, often rooted in drawing.</span><br>
+    <span data-i18n="bioLine4">Also goes by 4900won, sangsoo1ee, and dojagigirl.</span>
+  </div>
+  <div class="footer-contact">
+    <span class="title" data-i18n="contact">CONTACT</span>
+    <a href="https://www.instagram.com/4900won/" target="_blank" rel="noopener">@4900won</a>
+    <a href="mailto:dojagigirl@gmail.com">dojagigirl@gmail.com</a>
+  </div>
+  <div class="footer-copyright" data-i18n="copyright">© 2026 4900won. All rights reserved.</div>
+  <div class="footer-tattoo">
+    <span class="title" data-i18n="tattooInquiry">TATTOO INQUIRY</span>
+    <a href="https://www.instagram.com/sangsoo1ee/" target="_blank" rel="noopener">@sangsoo1ee</a>
+  </div>
+</section>
+
+<script>
+const loadingImages = [
+  "watermark1.svg",
+  "watermark2.svg",
+  "watermark3.svg",
+  "watermark4.svg",
+  "watermark5.svg"
+];
+
+const loadingImage = document.getElementById("loadingImage");
+const loadingScreen = document.getElementById("loadingScreen");
+const popupTime = 300;
+
+function preloadImage(src){
+  return new Promise(resolve => {
+    const image = new Image();
+    image.onload = resolve;
+    image.onerror = resolve;
+    image.src = src;
+  });
+}
+
+function wait(ms){
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function waitForPaint(){
+  return new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+}
+
+async function runLoadingSequence(){
+  // 모든 이미지를 먼저 캐시에 올린다.
+  await Promise.all(loadingImages.map(preloadImage));
+
+  for(const src of loadingImages){
+    loadingImage.src = src;
+
+    // SVG가 실제로 디코딩되고 화면에 그려진 뒤부터 표시 시간을 센다.
+    // 이렇게 해야 복잡도가 다른 watermark2/4도 1/3/5와 같은 시간 동안 보인다.
+    if (loadingImage.decode) {
+      try {
+        await loadingImage.decode();
+      } catch (e) {}
+    }
+
+    await waitForPaint();
+    await wait(popupTime);
+  }
+
+  loadingScreen.classList.add("is-hidden");
+  sessionStorage.setItem("sangsoo1ee-intro-shown", "1");
+  document.body.classList.add("start-main");
+  startMainGraphicDraw();
+}
+
+function getGroups(){
+  return ["info", "works", "shop"].map(id => document.getElementById(id)).filter(Boolean);
+}
+
+function prepareDraw(groups){
+  groups.forEach(group => {
+    group.style.opacity = 1;
+    const lines = group.querySelectorAll("path, circle, ellipse, line, polyline, polygon");
+
+    lines.forEach(line => {
+      let length = 600;
+      try{
+        if(line.getTotalLength) length = line.getTotalLength();
+      }catch(e){}
+
+      line.style.strokeDasharray = length;
+      line.style.strokeDashoffset = length;
+      line.style.animation = "none";
+    });
+  });
+}
+
+function startMainGraphicDraw(){
+  const mainGraphic = document.getElementById("mainGraphic");
+  if(mainGraphic) mainGraphic.classList.add("draw");
+  const groups = getGroups();
+  prepareDraw(groups);
+
+  requestAnimationFrame(() => {
+    groups.forEach((group, groupIndex) => {
+      const lines = group.querySelectorAll("path, circle, ellipse, line, polyline, polygon");
+
+      lines.forEach((line, lineIndex) => {
+        line.style.animation = "drawLine 1.45s cubic-bezier(.33,0,.2,1) forwards";
+        line.style.animationDelay = `${groupIndex * 0.18 + lineIndex * 0.0025}s`;
+      });
+    });
+  });
+
+  setTimeout(() => {
+    groups.forEach(group => {
+      const lines = group.querySelectorAll("path, circle, ellipse, line, polyline, polygon");
+      lines.forEach(line => {
+        line.style.strokeDasharray = "";
+        line.style.strokeDashoffset = "";
+        line.style.animation = "";
+        line.style.animationDelay = "";
+      });
+    });
+
+    document.body.classList.add("loaded");
+  }, 2850);
+
+  bindInteractions(groups);
+}
+
+function bindInteractions(groups){
+  const links = {
+    info: document.querySelector('.nav-info'),
+    works: document.querySelector('.nav-works'),
+    shop: document.querySelector('.nav-shop')
+  };
+
+  function clearActive(){
+    document.body.classList.remove("has-hover");
+    groups.forEach(g => g.classList.remove("is-active"));
+    Object.values(links).forEach(a => {
+      if(a) a.classList.remove("is-active");
+    });
+  }
+
+  function setActive(id){
+    clearActive();
+    const group = document.getElementById(id);
+    const link = links[id];
+    if(!group || !link) return;
+
+    document.body.classList.add("has-hover");
+    group.classList.add("is-active");
+    link.classList.add("is-active");
+  }
+
+  // 실제 선이 너무 얇아서 hover가 안 잡히는 문제 해결:
+  // 각 SVG 그룹의 화면상 박스를 기준으로 넉넉하게 감지한다.
+  const mainGraphic = document.getElementById("mainGraphic");
+  const hoverPadding = 46;
+  let activeFromGraphic = null;
+
+  function getExpandedRect(group){
+    const rect = group.getBoundingClientRect();
+    return {
+      left: rect.left - hoverPadding,
+      right: rect.right + hoverPadding,
+      top: rect.top - hoverPadding,
+      bottom: rect.bottom + hoverPadding
+    };
+  }
+
+  function pointInsideRect(x, y, rect){
+    return x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
+  }
+
+  if(mainGraphic){
+    mainGraphic.addEventListener("mousemove", (event) => {
+      if(!document.body.classList.contains("loaded")) return;
+
+      let found = null;
+      groups.forEach(group => {
+        const rect = getExpandedRect(group);
+        if(pointInsideRect(event.clientX, event.clientY, rect)){
+          found = group.id;
+        }
+      });
+
+      if(found){
+        activeFromGraphic = found;
+        setActive(found);
+      }else if(activeFromGraphic){
+        activeFromGraphic = null;
+        clearActive();
+      }
+    });
+
+    mainGraphic.addEventListener("mouseleave", () => {
+      activeFromGraphic = null;
+      clearActive();
+    });
+  }
+
+  Object.entries(links).forEach(([id, link]) => {
+    const group = document.getElementById(id);
+    if(!link || !group) return;
+
+    link.addEventListener("mouseenter", () => setActive(id));
+    link.addEventListener("mouseleave", clearActive);
+  });
+
+  const info = document.getElementById("info");
+  const works = document.getElementById("works");
+  const shop = document.getElementById("shop");
+
+  if(info) info.addEventListener("click", () => { location.href = "info.html"; });
+  if(works) works.addEventListener("click", () => { location.href = "works.html"; });
+  if(shop) shop.addEventListener("click", () => { location.href = "shop.html"; });
+}
+
+
+
+function initLanguage(){
+  const translations = {
+    en: {
+      info:'INFO', works:'WORKS', shop:'SHOP', tryon:'TRY-ON', type:'TYPE',
+      monthly:'try on tats',
+      bioName:'WONGYEONG LEE —',
+      bioLine1:'Maker & Visual Practitioner based in Seoul.',
+      bioLine2:'Working across visuals, tattoos, objects,',
+      bioLine3:'and handcrafted pieces, often rooted in drawing.',
+      bioLine4:'Also goes by 4900won, sangsoo1ee, and dojagigirl.',
+      contact:'CONTACT',
+      tattooInquiry:'TATTOO INQUIRY',
+      copyright:'© 2026 4900won. All rights reserved.'
+    },
+    ko: {
+      info:'소개', works:'작업', shop:'상점', tryon:'타투 체험', type:'서체',
+      monthly:'타투 도안 체험하기',
+      bioName:'이원경 —',
+      bioLine1:'서울을 기반으로 활동하는 메이커이자 비주얼 프랙티셔너.',
+      bioLine2:'드로잉을 바탕으로 이미지, 타투, 오브제와',
+      bioLine3:'손으로 만든 작업을 자유롭게 넘나든다.',
+      bioLine4:'4900won, sangsoo1ee, dojagigirl이라는 이름으로도 활동한다.',
+      contact:'연락',
+      tattooInquiry:'타투 문의',
+      copyright:'© 2026 4900won. 모든 권리 보유.'
+    }
+  };
+  const switcher = document.querySelector('.lang-switch');
+  const buttons = switcher ? [...switcher.querySelectorAll('[data-lang]')] : [];
+
+  function applyLanguage(lang){
+    const selected = translations[lang] ? lang : 'en';
+    document.documentElement.lang = selected;
+    document.querySelectorAll('[data-i18n]').forEach(element => {
+      const key = element.dataset.i18n;
+      if(translations[selected][key]) element.textContent = translations[selected][key];
+    });
+    buttons.forEach(button => button.classList.toggle('active', button.dataset.lang === selected));
+    localStorage.setItem('sangsoo1ee-language', selected);
+  }
+
+  buttons.forEach(button => button.addEventListener('click', () => applyLanguage(button.dataset.lang)));
+  applyLanguage(localStorage.getItem('sangsoo1ee-language') || 'en');
+}
+
+window.addEventListener("load", () => {
+  initLanguage();
+
+  const introAlreadyShown = sessionStorage.getItem("sangsoo1ee-intro-shown") === "1";
+  const navEntry = performance.getEntriesByType("navigation")[0];
+  const isReload = navEntry && navEntry.type === "reload";
+
+  if (isReload) {
+    document.documentElement.classList.remove("skip-watermark-intro");
+    loadingScreen.classList.remove("is-hidden");
+    runLoadingSequence();
+  } else if (introAlreadyShown) {
+    loadingScreen.classList.add("is-hidden");
+    document.body.classList.add("start-main");
+    startMainGraphicDraw();
+  } else {
+    runLoadingSequence();
+  }
+});
+</script>
+
+
+<script>
+(() => {
+  if(!window.matchMedia('(pointer:fine)').matches) return;
+  const c=document.createElement('div');
+  c.className='custom-cursor';
+  document.body.appendChild(c);
+  window.addEventListener('mousemove',e=>{
+    c.style.left=e.clientX+'px'; c.style.top=e.clientY+'px';
+    document.body.classList.add('cursor-ready');
+  },{passive:true});
+  window.addEventListener('mouseout',e=>{ if(!e.relatedTarget) document.body.classList.remove('cursor-ready'); });
+})();
+</script>
+
+<script src="theme.js"></script>
+</body>
+</html>
